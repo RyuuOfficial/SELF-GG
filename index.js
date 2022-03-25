@@ -50,22 +50,33 @@ const { sleep, isAfk, cekafk, addafk } = require('./lib/offline')
 const voting = JSON.parse(fs.readFileSync('./lib/voting.json'))
 const { addVote, delVote } = require('./lib/vote')
 const { jadibot, stopjadibot, listjadibot } = require('./lib/jadibot')
-
+let commandsDB = JSON.parse(fs.readFileSync('./lib/commandsdb.json'))
+const { addCommands, checkCommands, deleteCommands } = require('./lib/commands')
+let jcommandsDB = JSON.parse(fs.readFileSync('./lib/jcommandsdb.json'))
+const { addJcommands, checkJcommands, deleteJcommands } = require('./lib/jcommands')
 
 banChats = true
 offline = false
 targetpc = '6282293271747'
 owner = '6282293271747' //6285751056816
+ownerName = 'Ryuu'
 fake = '*Created By RyuuOfficial*'
+websc = 'https://github.com/RyuuOfficial/'
+linkyt = 'https://youtube.com/channel/UC0x9YvCDhVUe-lIgrE8Ro6w'
 simbol = '>'
 numbernye = '0'
 waktu = '-'
 alasan = '-'
 
+nomor_dana = '0822-9327-1747'
+nomor_gopay = '0822-9324-1747'
+nomor_ovo = '0822-9327-1747'
+link_qr_qris = 'link qr QRIS lu'
+
 img1 = fs.readFileSync('./stik/thumb.jpeg')
 img2 = fs.readFileSync('./stik/fake.jpeg')
 //=================================================//
-module.exports = hexa = async (hexa, mek) => {
+module.exports = Ryuu = async (Ryuu, mek) => {
 	try {
         if (!mek.hasNewMessage) return
         mek = mek.messages.all()[0]
@@ -75,8 +86,8 @@ module.exports = hexa = async (hexa, mek) => {
         	mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
         	const content = JSON.stringify(mek.message)
 		const from = mek.key.remoteJid
-		const { text, extendedText, contact, location, liveLocation, buttinMessage, image, video, sticker, document, audio, product } = MessageType
-		const time = moment.tz('Asia/Jakarta').format('DD/MM HH:mm:ss')
+		const { text, extendedText, contact, location, liveLocation, buttonMessage, image, video, sticker, document, audio, product } = MessageType
+		const time = moment.tz('Asia/Makassar').format('DD/MM HH:mm:ss')
                 const type = Object.keys(mek.message)[0]        
                 const cmd = (type === 'conversation' && mek.message.conversation) ? mek.message.conversation : (type == 'imageMessage') && mek.message.imageMessage.caption ? mek.message.imageMessage.caption : (type == 'videoMessage') && mek.message.videoMessage.caption ? mek.message.videoMessage.caption : (type == 'extendedTextMessage') && mek.message.extendedTextMessage.text ? mek.message.extendedTextMessage.text : ''.slice(1).trim().split(/ +/).shift().toLowerCase()
                 const prefix = /^[°•π÷×¶∆£¢€¥®™=|~!#$%^&.?/\\©^z+*@,;]/.test(cmd) ? cmd.match(/^[°•π÷×¶∆£¢€¥®™=|~!#$%^&.?/\\©^z+*,;]/gi) : '-'          	
@@ -86,14 +97,14 @@ module.exports = hexa = async (hexa, mek) => {
 		const args = body.trim().split(/ +/).slice(1)
 		const isCmd = body.startsWith(prefix)
 		const q = args.join(' ')
-		const botNumber = hexa.user.jid
-		const botNumberss = hexa.user.jid + '@c.us'
+		const botNumber = Ryuu.user.jid
+		const botNumberss = Ryuu.user.jid + '@c.us'
 		const isGroup = from.endsWith('@g.us')
 		let sender = isGroup ? mek.participant : mek.key.remoteJid
 		// const isSelfNumber = config.NomorSELF
 		// const isOwner = sender.id === isSelfNumber
-		const totalchat = await hexa.chats.all()
-		const groupMetadata = isGroup ? await hexa.groupMetadata(from) : ''
+		const totalchat = await Ryuu.chats.all()
+		const groupMetadata = isGroup ? await Ryuu.groupMetadata(from) : ''
 		const groupName = isGroup ? groupMetadata.subject : ''
 		const groupId = isGroup ? groupMetadata.jid : ''
 		const groupMembers = isGroup ? groupMetadata.participants : ''
@@ -103,8 +114,8 @@ module.exports = hexa = async (hexa, mek) => {
 		const isBotGroupAdmins = groupAdmins.includes(botNumber) || false
 		const isGroupAdmins = groupAdmins.includes(sender) || false
         const isVote = isGroup ? voting.includes(from) : false
-        const conts = mek.key.fromMe ? hexa.user.jid : hexa.contacts[sender] || { notify: jid.replace(/@.+/, '') }
-        const pushname = mek.key.fromMe ? hexa.user.name : conts.notify || conts.vname || conts.name || '-'
+        const conts = mek.key.fromMe ? Ryuu.user.jid : Ryuu.contacts[sender] || { notify: jid.replace(/@.+/, '') }
+        const pushname = mek.key.fromMe ? Ryuu.user.name : conts.notify || conts.vname || conts.name || '-'
 
 
         //MESS
@@ -125,19 +136,19 @@ module.exports = hexa = async (hexa, mek) => {
         }
 
         const reply = (teks) => {
-            hexa.sendMessage(from, teks, text, {quoted:mek})
+            Ryuu.sendMessage(from, teks, text, {quoted:mek})
         }
 
         const sendMess = (hehe, teks) => {
-            hexa.sendMessage(hehe, teks, text)
+            Ryuu.sendMessage(hehe, teks, text)
         }
 
         const mentions = (teks, memberr, id) => {
-            (id == null || id == undefined || id == false) ? hexa.sendMessage(from, teks.trim(), extendedText, { contextInfo: { "mentionedJid": memberr } }) : hexa.sendMessage(from, teks.trim(), extendedText, { quoted: mek, contextInfo: { "mentionedJid": memberr } })
+            (id == null || id == undefined || id == false) ? Ryuu.sendMessage(from, teks.trim(), extendedText, { contextInfo: { "mentionedJid": memberr } }) : Ryuu.sendMessage(from, teks.trim(), extendedText, { quoted: mek, contextInfo: { "mentionedJid": memberr } })
         }
 
         const fakestatus = (teks) => {
-            hexa.sendMessage(from, teks, text, {
+            Ryuu.sendMessage(from, teks, text, {
                 quoted: {
                     key: {
                         fromMe: false,
@@ -147,7 +158,7 @@ module.exports = hexa = async (hexa, mek) => {
                         "imageMessage": {
                             "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc",
                             "mimetype": "image/jpeg",
-                            "caption": fake,
+                            "caption": `Bot By ${ownerName}\nBot By RyuuOfficial`,
                             "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=",
                             "fileLength": "28777",
                             "height": 1080,
@@ -164,10 +175,10 @@ module.exports = hexa = async (hexa, mek) => {
             })
         }
         const fakethumb = (teks, yes) => {
-            hexa.sendMessage(from, teks, image, {thumbnail:fs.readFileSync('./stik/fake.jpeg'),quoted:mek,caption:yes})
+            Ryuu.sendMessage(from, teks, image, {thumbnail:fs.readFileSync('./stik/fake.jpeg'),quoted:mek,caption:yes})
         }
         const fakegroup = (teks) => {
-            hexa.sendMessage(from, teks, text, {
+            Ryuu.sendMessage(from, teks, text, {
                 quoted: {
                     key: {
                         fromMe: false,
@@ -206,7 +217,7 @@ module.exports = hexa = async (hexa, mek) => {
                     let asw = './stik' + names + '.webp'
                     exec(`ffmpeg -i ${filess} -vcodec libwebp -filter:v fps=fps=20 -lossless 1 -loop 0 -preset default -an -vsync 0 -s 512:512 ${asw}`, (err) => {
                         let media = fs.readFileSync(asw)
-                        hexa.sendMessage(to, media, MessageType.sticker,{quoted:mek})
+                        Ryuu.sendMessage(to, media, MessageType.sticker,{quoted:mek})
                         fs.unlinkSync(filess)
                         fs.unlinkSync(asw)
                     });
@@ -236,7 +247,7 @@ module.exports = hexa = async (hexa, mek) => {
                     if(mime.split("/")[0] === "audio"){
                         mime = Mimetype.mp4Audio
                     }
-                    hexa.sendMessage(to, media, type, { quoted: mek, mimetype: mime, caption: text,contextInfo: {"mentionedJid": mids}})
+                    Ryuu.sendMessage(to, media, type, { quoted: mek, mimetype: mime, caption: text,contextInfo: {"mentionedJid": mids}})
                     
                     fs.unlinkSync(filename)
                 });
@@ -248,7 +259,7 @@ module.exports = hexa = async (hexa, mek) => {
             if (isAfk(mek.key.remoteJid)) return
             addafk(mek.key.remoteJid)
             heheh = ms(Date.now() - waktu) 
-            hexa.sendMessage(mek.key.remoteJid,`@${owner} Sedang Offline!\n\n*Alasan :* ${alasan}\n*Sejak :* ${heheh.hours} Jam, ${heheh.minutes} Menit, ${heheh.seconds} Detik lalu\n\nSilahkan Hubungi Lagi Nanti`, MessageType.text,{contextInfo:{ mentionedJid: [`${owner}@s.whatsapp.net`],'stanzaId': "B826873620DD5947E683E3ABE663F263", 'participant': "0@s.whatsapp.net", 'remoteJid': 'status@broadcast', 'quotedMessage': {"imageMessage": {"caption": "*OFFLINE*", 'jpegThumbnail': fs.readFileSync('./stik/thumb.jpeg')}}}})
+            Ryuu.sendMessage(mek.key.remoteJid,`@${owner} Sedang Offline!\n\n*Alasan :* ${alasan}\n*Sejak :* ${heheh.hours} Jam, ${heheh.minutes} Menit, ${heheh.seconds} Detik lalu\n\nSilahkan Hubungi Lagi Nanti`, MessageType.text,{contextInfo:{ mentionedJid: [`${owner}@s.whatsapp.net`],'stanzaId': "B826873620DD5947E683E3ABE663F263", 'participant': "0@s.whatsapp.net", 'remoteJid': 'status@broadcast', 'quotedMessage': {"imageMessage": {"caption": "*OFFLINE*", 'jpegThumbnail': fs.readFileSync('./stik/thumb.jpeg')}}}})
             }
             }   
         if (mek.key.remoteJid.endsWith('@g.us') && offline) {
@@ -261,7 +272,7 @@ module.exports = hexa = async (hexa, mek) => {
         if (isAfk(mek.key.remoteJid)) return
         addafk(mek.key.remoteJid)
         heheh = ms(Date.now() - waktu)
-        hexa.sendMessage(mek.key.remoteJid,`@${owner} Sedang Offline!\n\n *Alasan :* ${alasan}\n *Sejak :* ${heheh.hours} Jam, ${heheh.minutes} Menit, ${heheh.seconds} Detik lalu\n\nSilahkan Hubungi Lagi Nanti`, MessageType.text,{contextInfo:{ mentionedJid: [`${owner}@s.whatsapp.net`],'stanzaId': "B826873620DD5947E683E3ABE663F263", 'participant': "0@s.whatsapp.net", 'remoteJid': 'status@broadcast', 'quotedMessage': {"imageMessage": {"caption": "*OFFLINE*", 'jpegThumbnail': fs.readFileSync('./stik/thumb.jpeg')}}}})
+        Ryuu.sendMessage(mek.key.remoteJid,`@${owner} Sedang Offline!\n\n *Alasan :* ${alasan}\n *Sejak :* ${heheh.hours} Jam, ${heheh.minutes} Menit, ${heheh.seconds} Detik lalu\n\nSilahkan Hubungi Lagi Nanti`, MessageType.text,{contextInfo:{ mentionedJid: [`${owner}@s.whatsapp.net`],'stanzaId': "B826873620DD5947E683E3ABE663F263", 'participant': "0@s.whatsapp.net", 'remoteJid': 'status@broadcast', 'quotedMessage': {"imageMessage": {"caption": "*OFFLINE*", 'jpegThumbnail': fs.readFileSync('./stik/thumb.jpeg')}}}})
           }
         }
             }
@@ -277,7 +288,7 @@ footerText: desc1,
 buttons: but,
 headerType: 1
 }
-hexa.sendMessage(id, buttonMessage, MessageType.buttonsMessage, options)
+Ryuu.sendMessage(id, buttonMessage, MessageType.buttonsMessage, options)
 }
 
 const sendButton = async (from, context, fortext, but, mek) => {
@@ -287,12 +298,12 @@ footerText: fortext,
 buttons: but,
 headerType: 1
 }
-hexa.sendMessage(from, buttonMessages, buttonsMessage, {
+Ryuu.sendMessage(from, buttonMessages, buttonsMessage, {
 quoted: mek
 })
 }
 const sendButImage = async (from, context, fortext, img, but, mek) => {
-jadinya = await hexa.prepareMessage(from, img, image)
+jadinya = await Ryuu.prepareMessage(from, img, image)
 buttonMessagesI = {
 imageMessage: jadinya.message.imageMessage,
 contentText: context,
@@ -300,42 +311,73 @@ footerText: fortext,
 buttons: but,
 headerType: 4
 }
-hexa.sendMessage(from, buttonMessagesI, buttonsMessage, {
+Ryuu.sendMessage(from, buttonMessagesI, buttonsMessage, {
 quoted: mek,
 })
 }
 async function sendButLoc(id, text1, desc1, gam1, but = [], options = {}) {
 let buttonMessages = { locationMessage: { jpegThumbnail: gam1 }, contentText: text1, footerText: desc1, buttons: but, headerType: 6 }
-return hexa.sendMessage(id, buttonMessages, MessageType.buttonsMessage, options)
+return Ryuu.sendMessage(id, buttonMessages, MessageType.buttonsMessage, options)
 }            
 
 const sticOwner = (hehe) => {
 ano = fs.readFileSync('./lib/sticker/owner.webp')
-hexa.sendMessage(hehe, ano, sticker, { quoted: mek})
+Ryuu.sendMessage(hehe, ano, sticker, { quoted: mek})
 }
 const sticWait = (hehe) => {
 ano = fs.readFileSync('./lib/sticker/wait.webp')
-hexa.sendMessage(hehe, ano, sticker, { quoted: mek})
+Ryuu.sendMessage(hehe, ano, sticker, { quoted: mek})
 }
 const sticLoad = (hehe) => {
 ano = fs.readFileSync('./lib/sticker/loading.webp')
-hexa.sendMessage(hehe, ano, sticker, { quoted: mek})
+Ryuu.sendMessage(hehe, ano, sticker, { quoted: mek})
 }
 const sticGroup = (hehe) => {
 ano = fs.readFileSync('./lib/sticker/group.webp')
-hexa.sendMessage(hehe, ano, sticker, { quoted: mek})
+Ryuu.sendMessage(hehe, ano, sticker, { quoted: mek})
 }
 const sticBotAdmin = (hehe) => {
 ano = fs.readFileSync('./lib/sticker/botadmin.webp')
-hexa.sendMessage(hehe, ano, sticker, { quoted: mek})
+Ryuu.sendMessage(hehe, ano, sticker, { quoted: mek})
 }
 const sticBanned = (hehe) => {
 ano = fs.readFileSync('./lib/sticker/banned.webp')
-hexa.sendMessage(hehe, ano, sticker, { quoted: mek})
+Ryuu.sendMessage(hehe, ano, sticker, { quoted: mek})
 }
 const sticAdmin = (hehe) => {
 ano = fs.readFileSync('./lib/sticker/admin.webp')
-hexa.sendMessage(hehe, ano, sticker, { quoted: mek})
+Ryuu.sendMessage(hehe, ano, sticker, { quoted: mek})
+}
+
+let bio_nya = await Ryuu.getStatus(sender)
+try {
+bio_user = `${bio_nya.status}`
+} catch {
+bio_user = '-'
+}
+
+for (let i = 0; i < commandsDB.length ; i++) {
+if (budy == commandsDB[i].pesan) {
+Ryuu.sendMessage(from, commandsDB[i].balasan, text, {quoted: mek})
+}
+}
+for (let i = 0; i < jcommandsDB.length ; i++) {
+if (budy == jcommandsDB[i].pesan) {
+Ryuu.sendMessage(from, jcommandsDB[i].balasan, text, {quoted: mek})
+}
+}
+
+if(budy.includes('X')){
+Ryuu.sendMessage(from, "Baik sedang membatalkan pesanan...", text)
+Ryuu.sendMessage(`${owner}@s.whatsapp.net`, `Bang pesanan di batalin ama\nwa.me/${sender.split('@')[0]}\nMungkin dia nunggu udah terlalu lama...`, text)
+console.log(color('Dibatalkan', 'red'), 'Mungkin dia nunggu udah terlalu lama...', color(sender.split('@')[0]))
+Ryuu.sendMessage(from, "Ok pesanan udah di batalin...", text)
+}
+if(budy.includes('Y')){
+Ryuu.sendMessage(from, "Baik sedang mengingatkan owner...", text)
+Ryuu.sendMessage(`${owner}@s.whatsapp.net`, `Bang pesanan di tunggu ama\nwa.me/${sender.split('@')[0]}\nCepetan dari pada buyer ilang 1...`, text)
+console.log(color('Ditunggu', 'green'), 'Cepetan dari pada buyer ilang 1...', color(sender.split('@')[0]))
+Ryuu.sendMessage(from, "Pesannya udah ke kirim ke admin tinggal di proses...", text)
 }
 
 //========================================================================================================================//
@@ -400,7 +442,7 @@ hexa.sendMessage(hehe, ano, sticker, { quoted: mek})
 switch (command) {
     case 'jadibot':
     if(mek.key.fromMe) return reply('Tidak bisa jadibot di dalam bot')
-    jadibot(reply,hexa,from)
+    jadibot(reply,Ryuu,from)
     break
     case 'stopjadibot':
     if(mek.key.fromMe)return reply('tidak bisa stopjadibot kecuali owner')
@@ -416,24 +458,48 @@ switch (command) {
     }
     reply(tekss)
     break
-    case 'menu':
-    case 'help':
-    	var menu = `Hai ${pushname}
-Prefix : 「 MULTI-PREFIX 」
+    case 'allmenu':
+    otod = `${owner}`
+    utod = `${sender}`
+    var p = await Ryuu.getStatus(`${sender}`, MessageType.text)
+    	var menu = `
+々 *User Info:*
+- Nama : ${pushname}
+- Tag : @${utod.split('@')[0]}
+- Api : wa.me/${sender.split('@')[0]}
+- Bio : ${p.status==undefined?`-`:p.status}
 
-*</OWNER>*
+々 *Bot Info:*
+- Owner : @${otod.split('@')[0]}
+- Mode : ${banChats? `Self`:`Public`}
+- Status : ${offline? `Online`:`Offline`}
+- Time : ${time}
+
+*々 OWNER MENU*
+${simbol} _${prefix}self_
+${simbol} _${prefix}public_
+${simbol} _${prefix}setthumb_
+${simbol} _${prefix}settarget_
+${simbol} _${prefix}setfakeimg_
+${simbol} _${prefix}setreply_
+${simbol} _${prefix}addrespon_
+${simbol} _${prefix}dellrespon_
 ${simbol} _${prefix}off_
 ${simbol} _${prefix}on_
 ${simbol} _${prefix}status_
+${simbol} _${prefix}join_
+${simbol} _${prefix}get_
+${simbol} _${prefix}term_ <code>
+${simbol} _>_ <code>
 
-*</MAKER>*
+*々 MAKER MENU*
 ${simbol} _${prefix}sticker_
 ${simbol} _${prefix}swm_ <author|packname>
 ${simbol} _${prefix}take_ <author|packname>
 ${simbol} _${prefix}fdeface_
 ${simbol} _${prefix}emoji_
 
-*</CONVERT>*
+*々 CONVERT MENU*
 ${simbol} _${prefix}toimg_
 ${simbol} _${prefix}tomp3_
 ${simbol} _${prefix}tomp4_
@@ -442,23 +508,31 @@ ${simbol} _${prefix}fast_
 ${simbol} _${prefix}reverse_
 ${simbol} _${prefix}tourl_
 
-*</UP STORY>*
+*々 UP STORY MENU*
 ${simbol} _${prefix}upswteks_
 ${simbol} _${prefix}upswimage_
 ${simbol} _${prefix}upswvideo_
 
-*</FUN>*
+*々 FUN MENU*
 ${simbol} _${prefix}fitnah_
 ${simbol} _${prefix}fitnahpc_
 ${simbol} _${prefix}kontak_
 
-*</TAG>*
+*々 STORE MENU*
+${simbol} _${prefix}culik_ <idgc>
+${simbol} _${prefix}addlist_
+${simbol} _${prefix}delllist_
+${simbol} _${prefix}admin_
+${simbol} _X_
+${simbol} _Y_
+
+*々 TAG MENU*
 ${simbol} _${prefix}hidetag_
 ${simbol} _${prefix}kontag_
 ${simbol} _${prefix}sticktag_
 ${simbol} _${prefix}totag_
 
-*</DOWNLOAD>*
+*々 DOWNLOAD MENU*
 ${simbol} _${prefix}ytsearch_ <query>
 ${simbol} _${prefix}igstalk_ <query>
 ${simbol} _${prefix}play_ <query>
@@ -481,53 +555,194 @@ ${simbol} _${prefix}chara_ <query>
 ${simbol} _${prefix}playstore_ <query>
 ${simbol} _${prefix}otaku_ <query>
 
-*</OTHER>*
-${simbol} _${prefix}self_
-${simbol} _${prefix}public_
-${simbol} _${prefix}baileys_
-${simbol} _${prefix}setthumb_
-${simbol} _${prefix}settarget_
-${simbol} _${prefix}setfakeimg_
-${simbol} _${prefix}setreply_
+*々 OTHER MENU*
 ${simbol} _${prefix}ping_
 ${simbol} _${prefix}inspect_
-${simbol} _${prefix}join_
-${simbol} _${prefix}get_
-${simbol} _${prefix}term_ <code>
-${simbol} _x_ <code>
+${simbol} _${prefix}ssweb_ <url>
+${simbol} _${prefix}dashboard_
 
-*</GROUP>*
+*々 GROUP MENU*
 ${simbol} _${prefix}leave_
 ${simbol} _${prefix}caripesan_ <query>
 
-*</JADI BOT>*
+*々 JADI BOT MENU*
 ${simbol} _${prefix}jadibot_
 ${simbol} _${prefix}stopjadibot_
 ${simbol} _${prefix}listbot_
 
-*</VOTE>*
+*々 VOTE MENU*
 ${simbol} _${prefix}voting_
 ${simbol} _${prefix}delvote_
 ${simbol} _vote_
-${simbol} _devote_
-
-❏ *SELF-BOT* ❏`
-menu2 = `*Reagerd My Team 𝙱𝚘𝚕𝚍 𝙿𝚛𝚘𝚓𝚎𝚌𝚝*\nAuthor: Hexa\nRecode: 𝙱𝚘𝚕𝚍 𝙿𝚛𝚘𝚓𝚎𝚌𝚝`
+${simbol} _devote_`
+menu2 = `*Reagerd My Team R - Dev Team*\nAuthor: RyuuOfficial\nRecode: R - Dev Team`
 but = [
-{ buttonId: `#info`, buttonText: { displayText: '️𝙸𝚗𝚏𝚘' }, type: 1 },
-{ buttonId: `#owner`, buttonText: { displayText: '𝙾𝚠𝚗𝚎𝚛' }, type: 1 },
-{ buttonId: `#scbot`, buttonText: { displayText: '𝚂𝚌𝚛𝚒𝚙𝚝' }, type: 1 }
+{ buttonId: `#info`, buttonText: { displayText: '️𝗜𝗡𝗙𝗢' }, type: 1 },
+{ buttonId: `#owner`, buttonText: { displayText: '𝗢𝗪𝗡𝗘𝗥' }, type: 1 },
 ]
-sendButLoc(from, menu, menu2, img1, but)
+sendButLoc(from, menu, menu2, img1, but, { contextInfo: { mentionedJid: [otod, utod]}})
            	break
-    case 'isbaileys': 
-case 'bail': 
-case 'baileys':
-if (!mek.key.fromMe) return sticOwner(from)
-reply(`${mek.quoted.isBaileys}`)
+    case 'dashboard':
+         dash = `
+   - [ *DASHBOARD* ] -
+
+- Owner Menu : 16
+- Maker Menu : 5
+- Convert Menu : 7
+- Up Story Menu : 3
+- Fun Menu : 3
+- Store Menu : 6
+- Tag Menu : 4
+- Download Menu : 22
+- Other Menu : 4
+- Group Menu : 2
+- Jadi Bot Menu : 3
+- Vote Menu :4`
+menu2 = `_© Created By RyuuOfficial_`
+but = [
+{ buttonId: `#allmenu`, buttonText: { displayText: '️𝗠𝗘𝗡𝗨' }, type: 1 },
+]
+sendButLoc(from, menu, menu2, img1, but, { contextInfo: { mentionedJid: [otod, utod]}})
+           	break
+    case 'help':
+    case 'menu':
+    otod = `${owner}`
+    utod = `${sender}`
+    var p = await Ryuu.getStatus(`${sender}`, MessageType.text)
+    	var menu = `
+々 *USER INFO:*
+- Nama : ${pushname}
+- Tag : @${utod.split('@')[0]}
+- Api : wa.me/${sender.split('@')[0]}
+- Bio : ${p.status==undefined?`-`:p.status}
+
+々 *BOT INFO:*
+- Owner : @${otod.split('@')[0]}
+- Mode : ${banChats? `Self`:`Public`}
+- Status : ${offline? `Online`:`Offline`}
+- Time : ${time}`
+menu2 = `_© Created By RyuuOfficial_`
+but = [
+{ buttonId: `#allmenu`, buttonText: { displayText: '️𝗗𝗔𝗦𝗛𝗕𝗢𝗔𝗥𝗗' }, type: 1 },
+]
+sendButLoc(from, menu, menu2, img1, but, { contextInfo: { mentionedJid: [otod, utod]}})
+           	break
+// STORE MENU
+    case 'addlist':{
+          if (!mek.key.fromMe) return sticOwner(from)
+          if (args.length < 1) return reply(`Penggunaan ${prefix}addrespon key|respon\n\nContoh : ${prefix}addrespon hai|juga`)
+          let input1 = body.slice(8)
+          if (!input1.includes('|')) return reply(`Penggunaan ${prefix}addrespon key|respon\n\nContoh : ${prefix}addrespon hai|juga`)
+          let input = input1.split("|")
+          if (checkCommands(input[0], jcommandsDB) === true) return reply(`Command tersebut sudah ada`)
+          addCommands(input[0], input[1], sender, jcommandsDB) 
+          reply(`Key : ${input[0]}\nRespon : ${input[1]}\n\nRespon berhasil di set`)
+          }
+      break
+      case 'delllist':
+      case 'dellist':{
+          if (!mek.key.fromMe) return sticOwner(from) 
+            if (args.length < 1) return reply(`Penggunaan ${prefix}delrespon key\n\nContoh : ${prefix}delrespon hai`)
+          if (!checkCommands(body.slice(11), jcommandsDB)) return reply(`Key tersebut tidak ada di database`)
+          deleteCommands(body.slice(11), jcommandsDB)
+          reply(`Berhasil menghapus respon dengan key ${body.slice(11)}`)
+          }
+      break
+      case 'storemenu':{
+          let txt = ``
+          //let pesan = fs.readFileSync('./lib/jcommandsdb.json') 
+          for (let i = 0; i < jcommandsDB.length; i++){
+          txt += `${simbol} ${jcommandsDB[i].pesan}\n`
+          }
+          but = [
+          { buttonId: `#admin`, buttonText: { displayText: '️BELI' }, type: 1 },
+          { buttonId: `#payment`, buttonText: { displayText: 'PEMBAYARAN' }, type: 1 }
+          ]
+          sendButMessage(from, `*々 STORE MENU*\n\n${txt}`, '© Created By RyuuOfficial', but)
+          }
+        break
+        case 'admin':
+        adm = `
+Jika ingin melanjutkan pembelian
+Chat owner untuk melanjutkan 
+Pembelian mu
+wa.me/${owner}`
+fakestatus(adm) 
 break
+case 'payment':
+        fakestatus(`
+*々 PAYMENT BOT*
+
+GOPAY: ${nomor_gopay}
+DANA: ${nomor_dana}
+OVO: ${nomor_ovo}
+QRIS: ${link_qr_qris}`) 
+          break
+// TAMAT
+            case 'listgc':
+            case 'gclist':
+            case 'listgroup':
+            case 'listgrup':
+            case 'listgrop':
+            case 'gruplist':
+            case 'groplist':
+            case 'grouplist':
+                const txs = Ryuu.chats.all().filter(v => v.jid.endsWith('g.us')).map(v => `- ${Ryuu.getName(v.jid)}\n${v.jid}\n[${v.read_only ? 'Left' : 'Joined'}]`).join`\n\n`
+                fakegroup(txs)
+                break
+    case 'culik':
+            if (!mek.key.fromMe) return sticOwner(from) 
+            if (args.length < 1) return reply('_*Masukin id grupnya tolol*_')
+            let pantek = []
+            for (let i of groupMembers) {
+                pantek.push(i.jid)
+            }
+            Ryuu.groupAdd(args[0], pantek)
+            break
+    case 'addrespon':{
+          if (!mek.key.fromMe) return sticOwner(from) 
+          if (args.length < 1) return reply(`Penggunaan ${prefix}addrespon key|respon\n\nContoh : ${prefix}addrespon hai|juga`)
+          let input1 = body.slice(11)
+          if (!input1.includes('|')) return reply(`Penggunaan ${prefix}addrespon key|respon\n\nContoh : ${prefix}addrespon hai|juga`)
+          let input = input1.split("|")
+          if (checkCommands(input[0], commandsDB) === true) return reply(`Command tersebut sudah ada`)
+          addCommands(input[0], input[1], sender, commandsDB) 
+          reply(`Key : ${input[0]}\nRespon : ${input[1]}\n\nRespon berhasil di set`)
+          }
+      break
+      case 'dellrespon':
+      case 'delrespon':{
+          if (!mek.key.fromMe) return sticOwner(from) 
+            if (args.length < 1) return reply(`Penggunaan ${prefix}delrespon key\n\nContoh : ${prefix}delrespon hai`)
+          if (!checkCommands(body.slice(11), commandsDB)) return reply(`Key tersebut tidak ada di database`)
+          deleteCommands(body.slice(11), commandsDB)
+          reply(`Berhasil menghapus respon dengan key ${body.slice(11)}`)
+          }
+      break
+        case 'listrespon':{
+          //let pesan = fs.readFileSync('./lib/commandsdb.json') 
+          let txt = `List Respon\nTotal : ${commandsDB.length}\n\n`
+          for (let i = 0; i < commandsDB.length; i++){
+          txt += ` ${commandsDB[i].pesan}\n`
+          }
+          reply(`Menu Respon\n\n`, txt)
+          }
+        break
+    case 'ssweb':
+					if (args.length < 1) return reply('Urlnya mana om')
+					teks = body.slice(7)
+					sticWait(from)
+					anu = await fetchJson(`https://mnazria.herokuapp.com/api/screenshotweb?url=${teks}`)
+					buff = await getBuffer(anu.gambar)
+					Ryuu.sendMessage(from, buff, image, {quoted: mek})
+					break
     case 'scbot':
-            sc =  `github.com/Hexagonz/SELF-HX`
+            sc =  `
+Script:
+${websc}
+
+Base:
+${linkyt}`
             fakegroup(sc) 
             break
     case 'owner':
@@ -538,17 +753,17 @@ break
     case 'broadcast':
             if (!mek.key.fromMe) return sticOwner(from)
             if (args.length < 1) return reply('teks?')
-            anu = await hexa.chats.all()
+            anu = await Ryuu.chats.all()
             if (isMedia && !mek.message.videoMessage || isQuotedImage) {
             const encmedia = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
-            bc = await hexa.downloadMediaMessage(encmedia)
+            bc = await Ryuu.downloadMediaMessage(encmedia)
             for (let _ of anu) {
-            hexa.sendMessage(_.jid, bc, image, {quoted:reply,caption: `「 *INFORMATION* 」\n\n${body.slice(4)}`})
+            Ryuu.sendMessage(_.jid, bc, image, {quoted:reply,caption: `「 *INFORMATION* 」\n\n${body.slice(4)}`})
             }
             reply('Suksess broadcast')
             } else {
             for (let _ of anu) {
-            sendMess(_.jid, `「 *INFORMATION* 」\n\n${body.slice(4)}`)
+            sendMess(_.jid, `「 *INFORMATION* 」\n\n${body.slice(4)}\n\n${time}`)
             }
             reply('Suksess broadcast')
             }
@@ -556,29 +771,34 @@ break
     case 'leave':
             if (!isGroup) return sticGroup(from)
             if (isGroupAdmins || mek.key.fromMe) {
-            hexa.groupLeave(from)
+            Ryuu.groupLeave(from)
             } else {
             sticAdmin(from)
             }
             break
     case 'info':
-            inf = `Information 𝙱𝚘𝚕𝚍  𝙿𝚛𝚘𝚓𝚎𝚌𝚝
+            inf = `Information Script:
             
-            Script:
-            github.com/Hexagonz/SELF-HX
+Script:
+${websc}
             
-            Author:
-            Hexagonz
+Author:
+R - Dev Team
             
-            Recoded:
-            RyuuOfficial
+Recoded:
+RyuuOfficial
             
-            Thanks To:
-            Hexagonz
-            RyuuOfficial
-            ZEEONE OFC
-            Zero YT7
-            And Group's 𝐙𝐨𝐧𝐚 𝐁𝐨𝐭`
+Thanks To:
+Hexagonz
+RyuuOfficial
+ZEEONE OFC
+Zero YT7
+KurrXD
+Lexxy
+Nanda ( NdaaBotz ) 
+And Group's 𝐙𝐨𝐧𝐚 𝐁𝐨𝐭
+
+Case ni sc hasil comat comot sc orang :)`
             fakestatus(inf) 
             break
     case 'delvote':
@@ -618,17 +838,17 @@ break
             for(let i of result.medias){
                 if(i.url.includes('mp4')){
                     let link = await getBuffer(i.url)
-                    hexa.sendMessage(from,link,video,{quoted: mek,caption: `Type : ${i.type}`})
+                    Ryuu.sendMessage(from,link,video,{quoted: mek,caption: `Type : ${i.type}`})
                 } else {
                     let link = await getBuffer(i.url)
-                    hexa.sendMessage(from,link,image,{quoted: mek,caption: `Type : ${i.type}`})                  
+                    Ryuu.sendMessage(from,link,image,{quoted: mek,caption: `Type : ${i.type}`})                  
                 }
             }
             });
             break
     case 'caripesan':
             if(!q) return reply('pesannya apa bang?')
-            let v = await hexa.searchMessages(q,from,10,1)
+            let v = await Ryuu.searchMessages(q,from,10,1)
             let s = v.messages
             let el = s.filter(v => v.message)
             el.shift()
@@ -637,7 +857,7 @@ break
             reply(`Ditemukan ${el.length} pesan`)
             await sleep(3000)
             for(let i = 0; i < el.length; i++) {
-            await hexa.sendMessage(from,'Nih pesannya',text,{quoted:el[i]})
+            await Ryuu.sendMessage(from,'Nih pesannya',text,{quoted:el[i]})
             }
             } catch(e){
             reply('Pesan tidak ditemukan!')
@@ -664,7 +884,7 @@ break
 *Sinopsis* :
 ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.batchSD}\n*Link Download HD* : ${anime.batchHD}`
             ram = await getBuffer(anime.img)
-            hexa.sendMessage(from,ram,image,{quoted:mek,caption:rem})
+            Ryuu.sendMessage(from,ram,image,{quoted:mek,caption:rem})
             break
     case 'komiku':
             if(!q) return reply(`judulnya?\n${prefix}komiku mao gakuin`)
@@ -682,14 +902,14 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             let im = await hx.chara(q)
             let acak = im[Math.floor(Math.random() * im.length)]
             let li = await getBuffer(acak)
-            await hexa.sendMessage(from,li,image,{quoted: mek})
+            await Ryuu.sendMessage(from,li,image,{quoted: mek})
             break
     case 'pinterest':
             if(!q) return reply('gambar apa?')
             let pin = await hx.pinterest(q)
             let ac = pin[Math.floor(Math.random() * pin.length)]
             let di = await getBuffer(ac)
-            await hexa.sendMessage(from,di,image,{quoted: mek})
+            await Ryuu.sendMessage(from,di,image,{quoted: mek})
             break
     case 'playstore':
             if(!q) return reply('lu nyari apa?')
@@ -742,14 +962,14 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             + `FN:${nah}\n`
             + `TEL;type=CELL;type=VOICE;waid=${entah}:${phoneNum('+' + entah).getNumber('internasional')}\n`
             + 'END:VCARD'.trim()
-            hexa.sendMessage(from, {displayName: `${nah}`, vcard: vcard}, contact, {contextInfo: {"mentionedJid": members_ids}})
+            Ryuu.sendMessage(from, {displayName: `${nah}`, vcard: vcard}, contact, {contextInfo: {"mentionedJid": members_ids}})
             break
     case 'sticktag':
             if ((isMedia && !mek.message.videoMessage || isQuotedSticker) && args.length == 0) {
             encmedia = isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            file = await hexa.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
+            file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
             value = args.join(" ")
-            var group = await hexa.groupMetadata(from)
+            var group = await Ryuu.groupMetadata(from)
             var member = group['participants']
             var mem = []
             member.map(async adm => {
@@ -760,7 +980,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 quoted: mek
             }
             ini_buffer = fs.readFileSync(file)
-            hexa.sendMessage(from, ini_buffer, sticker, options)
+            Ryuu.sendMessage(from, ini_buffer, sticker, options)
             fs.unlinkSync(file)
             } else {
             reply(`*Reply sticker yang sudah dikirim*`)
@@ -769,9 +989,9 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     case 'totag':
             if ((isMedia && !mek.message.videoMessage || isQuotedSticker) && args.length == 0) {
             encmedia = isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            file = await hexa.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
+            file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
             value = args.join(" ")
-            var group = await hexa.groupMetadata(from)
+            var group = await Ryuu.groupMetadata(from)
             var member = group['participants']
             var mem = []
             member.map(async adm => {
@@ -782,13 +1002,13 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 quoted: mek
             }
             ini_buffer = fs.readFileSync(file)
-            hexa.sendMessage(from, ini_buffer, sticker, options)
+            Ryuu.sendMessage(from, ini_buffer, sticker, options)
             fs.unlinkSync(file)
             } else if ((isMedia && !mek.message.videoMessage || isQuotedImage) && args.length == 0) {
             encmedia = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            file = await hexa.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
+            file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
             value = args.join(" ")
-            var group = await hexa.groupMetadata(from)
+            var group = await Ryuu.groupMetadata(from)
             var member = group['participants']
             var mem = []
             member.map(async adm => {
@@ -799,13 +1019,13 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 quoted: mek
             }
             ini_buffer = fs.readFileSync(file)
-            hexa.sendMessage(from, ini_buffer, image, options)
+            Ryuu.sendMessage(from, ini_buffer, image, options)
             fs.unlinkSync(file)
         } else if ((isMedia && !mek.message.videoMessage || isQuotedAudio) && args.length == 0) {
             encmedia = isQuotedAudio ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            file = await hexa.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
+            file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
             value = args.join(" ")
-            var group = await hexa.groupMetadata(from)
+            var group = await Ryuu.groupMetadata(from)
             var member = group['participants']
             var mem = []
             member.map(async adm => {
@@ -818,13 +1038,13 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 quoted: mek
             }
             ini_buffer = fs.readFileSync(file)
-            hexa.sendMessage(from, ini_buffer, audio, options)
+            Ryuu.sendMessage(from, ini_buffer, audio, options)
             fs.unlinkSync(file)
         }  else if ((isMedia && !mek.message.videoMessage || isQuotedVideo) && args.length == 0) {
             encmedia = isQuotedVideo ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            file = await hexa.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
+            file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
             value = args.join(" ")
-            var group = await hexa.groupMetadata(from)
+            var group = await Ryuu.groupMetadata(from)
             var member = group['participants']
             var mem = []
             member.map(async adm => {
@@ -836,7 +1056,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 quoted: mek
             }
             ini_buffer = fs.readFileSync(file)
-            hexa.sendMessage(from, ini_buffer, video, options)
+            Ryuu.sendMessage(from, ini_buffer, video, options)
             fs.unlinkSync(file)
         } else{
           reply(`reply gambar/sticker/audio/video dengan caption ${prefix}totag`)
@@ -849,7 +1069,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             var replace = gh.split("|")[0];
             var target = gh.split("|")[1];
             var bot = gh.split("|")[2];
-            hexa.sendMessage(from, `${bot}`, text, {quoted: { key: { fromMe: false, participant: `${mentioned}`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: `${target}` }}})
+            Ryuu.sendMessage(from, `${bot}`, text, {quoted: { key: { fromMe: false, participant: `${mentioned}`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: `${target}` }}})
             break
     case 'settarget':
             if(!q) return reply(`${prefix}settarget 628xxxxx`)
@@ -862,20 +1082,20 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             var split = args.join(' ').replace(/@|\d/gi, '').split('|')
             var taged = mek.message.extendedTextMessage.contextInfo.mentionedJid[0]
             var options = {contextInfo: {quotedMessage: {extendedTextMessage: {text: split[0]}}}}
-            const responye = await hexa.sendMessage(jids, `${split[1]}`, MessageType.text, options)
-            await hexa.deleteMessage(jids, { id: responye.messageID, remoteJid: jids, fromMe: true })
+            const responye = await Ryuu.sendMessage(jids, `${split[1]}`, MessageType.text, options)
+            await Ryuu.deleteMessage(jids, { id: responye.messageID, remoteJid: jids, fromMe: true })
             break
     case 'tomp3':
             if (!isQuotedVideo) return fakegroup('Reply videonya!')
             fakegroup(mess.wait)
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
-            media = await hexa.downloadAndSaveMediaMessage(encmedia)
+            media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
             ran = getRandom('.mp4')
             exec(`ffmpeg -i ${media} ${ran}`, (err) => {
             fs.unlinkSync(media)
             if (err) return fakegroup(`Err: ${err}`)
             buffer453 = fs.readFileSync(ran)
-            hexa.sendMessage(from, buffer453, audio, { mimetype: 'audio/mp4', quoted: mek })
+            Ryuu.sendMessage(from, buffer453, audio, { mimetype: 'audio/mp4', quoted: mek })
             fs.unlinkSync(ran)
             })
             break
@@ -883,13 +1103,13 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             if (!isQuotedVideo) return fakegroup('Reply videonya!')
             fakegroup(mess.wait)
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
-            media = await hexa.downloadAndSaveMediaMessage(encmedia)
+            media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
             ran = getRandom('.mp4')
             exec(`ffmpeg -i ${media} -filter_complex "[0:v]setpts=0.5*PTS[v];[0:a]atempo=2[a]" -map "[v]" -map "[a]" ${ran}`, (err) => {
             fs.unlinkSync(media)
             if (err) return fakegroup(`Err: ${err}`)
             buffer453 = fs.readFileSync(ran)
-            hexa.sendMessage(from, buffer453, video, { mimetype: 'video/mp4', quoted: mek })
+            Ryuu.sendMessage(from, buffer453, video, { mimetype: 'video/mp4', quoted: mek })
             fs.unlinkSync(ran)
             })
             break
@@ -897,26 +1117,26 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             if (!isQuotedVideo) return fakegroup('Reply videonya!')
             fakegroup(mess.wait)
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
-            media = await hexa.downloadAndSaveMediaMessage(encmedia)
+            media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
             ran = getRandom('.mp4')
             exec(`ffmpeg -i ${media} -filter_complex "[0:v]setpts=2*PTS[v];[0:a]atempo=0.5[a]" -map "[v]" -map "[a]" ${ran}`, (err) => {
             fs.unlinkSync(media)
             if (err) return fakegroup(`Err: ${err}`)
             buffer453 = fs.readFileSync(ran)
-            hexa.sendMessage(from, buffer453, video, { mimetype: 'video/mp4', quoted: mek })
+            Ryuu.sendMessage(from, buffer453, video, { mimetype: 'video/mp4', quoted: mek })
             fs.unlinkSync(ran)
             })
             break
     case 'reverse':
             if (!isQuotedVideo) return fakegroup('Reply videonya!')
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
-            media = await hexa.downloadAndSaveMediaMessage(encmedia)
+            media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
             ran = getRandom('.mp4')
             exec(`ffmpeg -i ${media} -vf reverse -af areverse ${ran}`, (err) => {
             fs.unlinkSync(media)
             if (err) return fakegroup(`Err: ${err}`)
             buffer453 = fs.readFileSync(ran)
-            hexa.sendMessage(from, buffer453, video, { mimetype: 'video/mp4', quoted: mek })
+            Ryuu.sendMessage(from, buffer453, video, { mimetype: 'video/mp4', quoted: mek })
             fs.unlinkSync(ran)
             })
             break
@@ -930,7 +1150,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             imageToBase64(pjr)
             .then((response) => {
             media =  Buffer.from(response, 'base64');
-            hexa.sendMessage(from,media,image,{quoted:mek,caption:'NIH'})
+            Ryuu.sendMessage(from,media,image,{quoted:mek,caption:'NIH'})
             }
             )
             .catch((error) => {
@@ -949,18 +1169,18 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             + `FN:${nah}\n`
             + `TEL;type=CELL;type=VOICE;waid=${entah}:${phoneNum('+' + entah).getNumber('internasional')}\n`
             + 'END:VCARD'.trim()
-            hexa.sendMessage(from, {displayName: `${nah}`, vcard: vcard}, contact)
+            Ryuu.sendMessage(from, {displayName: `${nah}`, vcard: vcard}, contact)
             break    
     case 'take':
     case 'colong':
     		if (!isQuotedSticker) return reply('Stiker aja om')
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo
-		    media = await hexa.downloadAndSaveMediaMessage(encmedia)
+		    media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
             anu = args.join(' ').split('|')
             satu = anu[0] !== '' ? anu[0] : `SELF`
             dua = typeof anu[1] !== 'undefined' ? anu[1] : `BOT`
             require('./lib/fetcher.js').createExif(satu, dua)
-			require('./lib/fetcher.js').modStick(media, hexa, mek, from)
+			require('./lib/fetcher.js').modStick(media, Ryuu, mek, from)
 			break
 	case 'stikerwm':
 	case 'stickerwm':
@@ -970,20 +1190,20 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             var b = pe.split("|")[1];
             if (isMedia && !mek.message.videoMessage || isQuotedImage ) {
             const encmedia = isQuotedImage   ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
-             media = await hexa.downloadAndSaveMediaMessage(encmedia)
+             media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
             await createExif(a,b)
             out = getRandom('.webp')
             ffmpeg(media)
             .on('error', (e) => {
             console.log(e)
-            hexa.sendMessage(from, 'Terjadi kesalahan', 'conversation', { quoted: mek })
+            Ryuu.sendMessage(from, 'Terjadi kesalahan', 'conversation', { quoted: mek })
             fs.unlinkSync(media)
             })
             .on('end', () => {
             _out = getRandom('.webp')
             spawn('webpmux', ['-set','exif','./stik/data.exif', out, '-o', _out])
             .on('exit', () => {
-            hexa.sendMessage(from, fs.readFileSync(_out),'stickerMessage', { quoted: mek })
+            Ryuu.sendMessage(from, fs.readFileSync(_out),'stickerMessage', { quoted: mek })
             fs.unlinkSync(out)
             fs.unlinkSync(_out)
             fs.unlinkSync(media)
@@ -994,7 +1214,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             .save(out) 
             } else if ((isMedia && mek.message.videoMessage.seconds < 11 || isQuotedVideo && mek.message.extendedTextMessage.contextInfo.quotedMessage.videoMessage.seconds < 11) && args.length == 0) {
             const encmedia = isQuotedVideo ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
-            const media = await hexa.downloadAndSaveMediaMessage(encmedia)
+            const media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
             pe = args.join('')
             var a = pe.split("|")[0];
             var b = pe.split("|")[1];
@@ -1003,14 +1223,14 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             ffmpeg(media)
             .on('error', (e) => {
             console.log(e)
-            hexa.sendMessage(from, 'Terjadi kesalahan', 'conversation', { quoted: mek })
+            Ryuu.sendMessage(from, 'Terjadi kesalahan', 'conversation', { quoted: mek })
             fs.unlinkSync(media)
             })
             .on('end', () => {
             _out = getRandom('.webp')
             spawn('webpmux', ['-set','exif','./stik/data.exif', out, '-o', _out])
             .on('exit', () => {
-            hexa.sendMessage(from, fs.readFileSync(_out),'stickerMessage', { quoted: mek })
+            Ryuu.sendMessage(from, fs.readFileSync(_out),'stickerMessage', { quoted: mek })
             fs.unlinkSync(out)
             fs.unlinkSync(_out)
             fs.unlinkSync(media)
@@ -1025,16 +1245,16 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             break
     case 'upswteks':
             if (!q) return fakestatus('Isi teksnya!')
-            hexa.sendMessage('status@broadcast', `${q}`, extendedText)
+            Ryuu.sendMessage('status@broadcast', `${q}`, extendedText)
             fakegroup(`Sukses Up story wea teks ${q}`)
             break
     case 'upswimage':
             if (isQuotedImage) {
             const swsw = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            cihcih = await hexa.downloadMediaMessage(swsw)
-            hexa.sendMessage('status@broadcast', cihcih, image, { caption: `${q}` })
+            cihcih = await Ryuu.downloadMediaMessage(swsw)
+            Ryuu.sendMessage('status@broadcast', cihcih, image, { caption: `${q}` })
             bur = `Sukses Upload Story Image dengan Caption: ${q}`
-            hexa.sendMessage(from, bur, text, { quoted: mek })
+            Ryuu.sendMessage(from, bur, text, { quoted: mek })
             } else {
             fakestatus('Reply gambarnya!')
             }
@@ -1042,10 +1262,10 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     case 'upswvideo':
             if (isQuotedVideo) {
             const swsw = isQuotedVideo ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            cihcih = await hexa.downloadMediaMessage(swsw)
-            hexa.sendMessage('status@broadcast', cihcih, video, { caption: `${q}` }) 
+            cihcih = await Ryuu.downloadMediaMessage(swsw)
+            Ryuu.sendMessage('status@broadcast', cihcih, video, { caption: `${q}` }) 
             bur = `Sukses Upload Story Video dengan Caption: ${q}`
-            hexa.sendMessage(from, bur, text, { quoted: mek })
+            Ryuu.sendMessage(from, bur, text, { quoted: mek })
             } else {
             fakestatus('reply videonya!')
             }
@@ -1059,7 +1279,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             const fde = `kirim/reply image dengan capion ${prefix}fdeface link|title|desc|teks`
             if (args.length < 1) return reply (fde)
             const dipes = isQuotedSticker || isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
-            const tipes = await hexa.downloadAndSaveMediaMessage(dipes)        
+            const tipes = await Ryuu.downloadAndSaveMediaMessage(dipes)        
             const bufer = fs.readFileSync(tipes)
             const desc = `${pn}`
             const title = `${pen}`
@@ -1068,12 +1288,12 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     		var anu = {
         	detectLinks: false
     		}
-    		var mat = await hexa.generateLinkPreview(url)
+    		var mat = await Ryuu.generateLinkPreview(url)
     		mat.title = title;
     		mat.description = desc;
     		mat.jpegThumbnail = bufer;
    			mat.canonicalUrl = buu; 
-    		hexa.sendMessage(from, mat, MessageType.extendedText, anu)
+    		Ryuu.sendMessage(from, mat, MessageType.extendedText, anu)
             break
     case 'public':
           	if (!mek.key.fromMe) return sticOwner(from) 
@@ -1094,7 +1314,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			if (!mek.key.fromMe) return sticOwner(from) 
 			if (!isGroup) return reply(mess.only.group)
 			var value = args.join(' ')
-			var group = await hexa.groupMetadata(from)
+			var group = await Ryuu.groupMetadata(from)
 			var member = group['participants']
 			var mem = []
 			member.map(async adm => {
@@ -1105,7 +1325,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			contextInfo: { mentionedJid: mem },
 			quoted: mek
 			}
-			hexa.sendMessage(from, optionshidetag, text)
+			Ryuu.sendMessage(from, optionshidetag, text)
 			break
 	case 'play':
 			if (args.length === 0) return reply(`Kirim perintah *${prefix}play* _Judul lagu yang akan dicari_`)
@@ -1157,7 +1377,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     case 's':
             if ((isMedia && !mek.message.videoMessage || isQuotedImage) && args.length == 0) {
             const encmedia = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            const media = await hexa.downloadAndSaveMediaMessage(encmedia)
+            const media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
                 ran = '666.webp'
                 await ffmpeg(`./${media}`)
                 .input(media)
@@ -1171,7 +1391,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 })
                 .on('end', function () {
                 console.log('Finish')
-                hexa.sendMessage(from, fs.readFileSync(ran), sticker, {quoted: mek})
+                Ryuu.sendMessage(from, fs.readFileSync(ran), sticker, {quoted: mek})
                  fs.unlinkSync(media)
                 fs.unlinkSync(ran)
                 })
@@ -1180,7 +1400,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 .save(ran)
                 } else if ((isMedia && mek.message.videoMessage.seconds < 11 || isQuotedVideo && mek.message.extendedTextMessage.contextInfo.quotedMessage.videoMessage.seconds < 11) && args.length == 0) {
                 const encmedia = isQuotedVideo ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-                const media = await hexa.downloadAndSaveMediaMessage(encmedia)
+                const media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
             ran = '999.webp'
             reply(mess.wait)
             await ffmpeg(`./${media}`)
@@ -1196,7 +1416,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             })
             .on('end', function () {
             console.log('Finish')
-            hexa.sendMessage(from, fs.readFileSync(ran), sticker, {quoted: mek})
+            Ryuu.sendMessage(from, fs.readFileSync(ran), sticker, {quoted: mek})
             fs.unlinkSync(media)
             fs.unlinkSync(ran)
                 })
@@ -1211,7 +1431,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			if (!isQuotedSticker) return reply('𝗥𝗲𝗽𝗹𝘆/𝘁𝗮𝗴 𝘀𝘁𝗶𝗰𝗸𝗲𝗿 !')
 			reply(mess.wait)
 			encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo
-			media = await hexa.downloadAndSaveMediaMessage(encmedia)
+			media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
 			ran = getRandom('.png')
 			exec(`ffmpeg -i ${media} ${ran}`, (err) => {
 			fs.unlinkSync(media)
@@ -1227,7 +1447,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			try {
         	var aramas = await yts(srch);
    			} catch {
-        	return await hexa.sendMessage(from, 'Error!', MessageType.text, dload)
+        	return await Ryuu.sendMessage(from, 'Error!', MessageType.text, dload)
     		}
     		aramat = aramas.all 
     		var tbuff = await getBuffer(aramat[0].image)
@@ -1252,7 +1472,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 	case 'setfakeimg':
         	if ((isMedia && !mek.message.videoMessage || isQuotedImage || isQuotedSticker) && args.length == 0) {
           	boij = isQuotedImage || isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
-			delb = await hexa.downloadMediaMessage(boij)
+			delb = await Ryuu.downloadMediaMessage(boij)
 			fs.writeFileSync(`./stik/fake.jpeg`, delb)
 			fakestatus('Sukses')
         	} else {
@@ -1262,7 +1482,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 	case 'setthumb':
 	        if ((isMedia && !mek.message.videoMessage || isQuotedImage || isQuotedSticker) && args.length == 0) {
           	boij = isQuotedImage || isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
-			delb = await hexa.downloadMediaMessage(boij)
+			delb = await Ryuu.downloadMediaMessage(boij)
 			fs.writeFileSync(`./stik/thumb.jpeg`, delb)
 			fakestatus('Sukses')
         	} else {
@@ -1327,7 +1547,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             gis(gimg, async (error, result) => {
             n = result
             images = n[Math.floor(Math.random() * n.length)].url
-            hexa.sendMessage(from,{url:images},image,{quoted:mek})
+            Ryuu.sendMessage(from,{url:images},image,{quoted:mek})
             });
             break
  	case 'tiktok':
@@ -1340,7 +1560,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     		axios.get(`https://tinyurl.com/api-create.php?url=${nowm}`)
     		.then(async (a) => {
     		me = `*Link* : ${a.data}`
-		hexa.sendMessage(from,{url:`${nowm}`},video,{mimetype:'video/mp4',quoted:mek,caption:me})
+		Ryuu.sendMessage(from,{url:`${nowm}`},video,{mimetype:'video/mp4',quoted:mek,caption:me})
 		})
 		})
      		.catch(e => console.log(e))
@@ -1364,7 +1584,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			for (let Y of res.data) {
 			teks += `\n*「 _BRAINLY_ 」*\n\n*➸ Pertanyaan:* ${Y.pertanyaan}\n\n*➸ Jawaban:* ${Y.jawaban[0].text}\n❉──────────────────❉\n`
 			}
-			hexa.sendMessage(from, teks, text,{quoted:mek,detectLinks: false})                        
+			Ryuu.sendMessage(from, teks, text,{quoted:mek,detectLinks: false})                        
             })              
 			break
     case 'ig':
@@ -1376,10 +1596,10 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             for(let i of result.medias){
                 if(i.url.includes('mp4')){
                     let link = await getBuffer(i.url)
-                    hexa.sendMessage(from,link,video,{quoted: mek,caption: `Type : ${i.type}`})
+                    Ryuu.sendMessage(from,link,video,{quoted: mek,caption: `Type : ${i.type}`})
                 } else {
                     let link = await getBuffer(i.url)
-                    hexa.sendMessage(from,link,image,{quoted: mek,caption: `Type : ${i.type}`})                  
+                    Ryuu.sendMessage(from,link,image,{quoted: mek,caption: `Type : ${i.type}`})                  
                 }
             }
             });
@@ -1420,7 +1640,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             if (!q) return fakestatus('Masukan link group')
             var codeInvite = hen.split('https://chat.whatsapp.com/')[1]
             if (!codeInvite) return fakegroup ('pastikan link sudah benar!')
-            var response = await hexa.acceptInvite(codeInvite)
+            var response = await Ryuu.acceptInvite(codeInvite)
             fakestatus('SUKSES')
             } catch {
             fakegroup('LINK ERROR!')
@@ -1454,9 +1674,9 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     case 'totag':
             if ((isMedia && !mek.message.videoMessage || isQuotedSticker) && args.length == 0) {
             encmedia = isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            file = await hexa.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
+            file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
             value = args.join(" ")
-            var group = await hexa.groupMetadata(from)
+            var group = await Ryuu.groupMetadata(from)
             var member = group['participants']
             var mem = []
             member.map(async adm => {
@@ -1467,13 +1687,13 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 quoted: mek
             }
             ini_buffer = fs.readFileSync(file)
-            hexa.sendMessage(from, ini_buffer, sticker, options)
+            Ryuu.sendMessage(from, ini_buffer, sticker, options)
             fs.unlinkSync(file)
             } else if ((isMedia && !mek.message.videoMessage || isQuotedImage) && args.length == 0) {
             encmedia = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            file = await hexa.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
+            file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
             value = args.join(" ")
-            var group = await hexa.groupMetadata(from)
+            var group = await Ryuu.groupMetadata(from)
             var member = group['participants']
             var mem = []
             member.map(async adm => {
@@ -1484,13 +1704,13 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 quoted: mek
             }
             ini_buffer = fs.readFileSync(file)
-            hexa.sendMessage(from, ini_buffer, image, options)
+            Ryuu.sendMessage(from, ini_buffer, image, options)
             fs.unlinkSync(file)
         } else if ((isMedia && !mek.message.videoMessage || isQuotedAudio) && args.length == 0) {
             encmedia = isQuotedAudio ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            file = await hexa.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
+            file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
             value = args.join(" ")
-            var group = await hexa.groupMetadata(from)
+            var group = await Ryuu.groupMetadata(from)
             var member = group['participants']
             var mem = []
             member.map(async adm => {
@@ -1503,13 +1723,13 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 quoted: mek
             }
             ini_buffer = fs.readFileSync(file)
-            hexa.sendMessage(from, ini_buffer, audio, options)
+            Ryuu.sendMessage(from, ini_buffer, audio, options)
             fs.unlinkSync(file)
         }  else if ((isMedia && !mek.message.videoMessage || isQuotedVideo) && args.length == 0) {
             encmedia = isQuotedVideo ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            file = await hexa.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
+            file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
             value = args.join(" ")
-            var group = await hexa.groupMetadata(from)
+            var group = await Ryuu.groupMetadata(from)
             var member = group['participants']
             var mem = []
             member.map(async adm => {
@@ -1521,7 +1741,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                 quoted: mek
             }
             ini_buffer = fs.readFileSync(file)
-            hexa.sendMessage(from, ini_buffer, video, options)
+            Ryuu.sendMessage(from, ini_buffer, video, options)
             fs.unlinkSync(file)
         } else{
           reply(`reply gambar/sticker/audio/video dengan caption ${prefix}totag`)
@@ -1530,7 +1750,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     case 'tomp4':
             if ((isMedia && !mek.message.videoMessage || isQuotedSticker) && args.length == 0) {
             ger = isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
-            owgi = await hexa.downloadAndSaveMediaMessage(ger)
+            owgi = await Ryuu.downloadAndSaveMediaMessage(ger)
             webp2mp4File(owgi).then(res=>{
             sendMediaURL(from,res.result,'Done')
             })
@@ -1542,7 +1762,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     case 'tourl':
             if ((isMedia && !mek.message.videoMessage || isQuotedImage || isQuotedVideo ) && args.length == 0) {
             boij = isQuotedImage || isQuotedVideo ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
-            owgi = await hexa.downloadMediaMessage(boij)
+            owgi = await Ryuu.downloadMediaMessage(boij)
             res = await upload(owgi)
             reply(res)
             } else {
@@ -1557,7 +1777,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             var net = cos.split('https://chat.whatsapp.com/')[1]
             if (!net) return reply('pastikan itu link https://whatsapp.com/')
             jids = []
-            let { id, owner, subject, subjectOwner, desc, descId, participants, size, descOwner, descTime, creation} = await hexa.query({ 
+            let { id, owner, subject, subjectOwner, desc, descId, participants, size, descOwner, descTime, creation} = await Ryuu.query({ 
             json: ["query", "invite",net],
             expect200:true })
             let par = `*Id* : ${id}
@@ -1574,15 +1794,15 @@ ${descOwner ? `*Desc diubah oleh* : @${descOwner.split('@')[0]}` : '*Desc diubah
              }
              jids.push(`${owner ? `${owner.replace(/@c.us/g,'@s.whatsapp.net')}` : '-'}`)
              jids.push(`${descOwner ? `${descOwner.replace(/@c.us/g,'@s.whatsapp.net')}` : '-'}`)
-             hexa.sendMessage(from,par,text,{quoted:mek,contextInfo:{mentionedJid:jids}})
+             Ryuu.sendMessage(from,par,text,{quoted:mek,contextInfo:{mentionedJid:jids}})
              } catch {
              reply('Link error')
              }
              break
 default:
-if (budy.startsWith('x')){
+if (budy.startsWith('>')){
 try {
-return hexa.sendMessage(from, JSON.stringify(eval(budy.slice(2)),null,'\t'),text, {quoted: mek})
+return Ryuu.sendMessage(from, JSON.stringify(eval(budy.slice(2)),null,'\t'),text, {quoted: mek})
 } catch(err) {
 e = String(err)
 reply(e)
