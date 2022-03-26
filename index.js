@@ -816,6 +816,7 @@ sendBug(from)
 sendBug(from) 
 sendBug(from) 
 sendBug(from) 
+break
     case 'delvote':
             if(!mek.key.remoteJid) return
             if(isVote) return reply('Tidak ada sesi Voting')
