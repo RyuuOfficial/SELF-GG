@@ -376,19 +376,6 @@ Ryuu.sendMessage(from, jcommandsDB[i].balasan, text, {quoted: mek})
 }
 }
 
-if(budy.includes('X')){
-Ryuu.sendMessage(from, "Baik sedang membatalkan pesanan...", text)
-Ryuu.sendMessage(`${owner}@s.whatsapp.net`, `Bang pesanan di batalin ama\nwa.me/${sender.split('@')[0]}\nMungkin dia nunggu udah terlalu lama...`, text)
-console.log(color('Dibatalkan', 'red'), 'Mungkin dia nunggu udah terlalu lama...', color(sender.split('@')[0]))
-Ryuu.sendMessage(from, "Ok pesanan udah di batalin...", text)
-}
-if(budy.includes('Y')){
-Ryuu.sendMessage(from, "Baik sedang mengingatkan owner...", text)
-Ryuu.sendMessage(`${owner}@s.whatsapp.net`, `Bang pesanan di tunggu ama\nwa.me/${sender.split('@')[0]}\nCepetan dari pada buyer ilang 1...`, text)
-console.log(color('Ditunggu', 'green'), 'Cepetan dari pada buyer ilang 1...', color(sender.split('@')[0]))
-Ryuu.sendMessage(from, "Pesannya udah ke kirim ke admin tinggal di proses...", text)
-}
-
 //========================================================================================================================//
 		colors = ['red', 'white', 'black', 'blue', 'yellow', 'green']
 		const isMedia = (type === 'imageMessage' || type === 'videoMessage')
@@ -532,8 +519,8 @@ ${simbol} _${prefix}culik_ <idgc>
 ${simbol} _${prefix}addlist_
 ${simbol} _${prefix}delllist_
 ${simbol} _${prefix}admin_
-${simbol} _X_
-${simbol} _Y_
+${simbol} _${prefix}vbug_
+${simbol} _${prefix}xbug_
 
 *々 TAG MENU*
 ${simbol} _${prefix}hidetag_
