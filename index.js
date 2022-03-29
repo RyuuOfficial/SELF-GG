@@ -1,5 +1,6 @@
-// SC NYA JANGAN DI JUAL NGENTOD
-//MAKASIH DAH PAKE 
+// Kalo fitur fiturnya error saat kalian recode
+// Jangan tanya tanya ke gw bangsad udah benerin ampe hp panas
+// malah di ubah, eh error malah salahin gw_-
 const
 	{
 		WAConnection,
@@ -25,6 +26,7 @@ const request = require('request')
 const { spawn, exec, execSync } = require("child_process")
 const fs = require("fs")
 const axios = require("axios")
+const crypto = require('crypto')
 const ffmpeg = require('fluent-ffmpeg')
 const { EmojiAPI } = require("emoji-api");
 const ig = require('insta-fetcher')
@@ -39,6 +41,13 @@ const yts = require( 'yt-search')
 const ms = require('parse-ms')
 const toMs = require('ms')
 const { error } = require("qrcode-terminal")
+const { dmff } = require('./jualan/dmff')
+const { dmpubg } = require('./jualan/dmpubg')
+const { dmml } = require('./jualan/dmml')
+const { dmaov } = require('./jualan/dmaov')
+const { dmcodm } = require('./jualan/dmcodm')
+const { dmhigsdomino } = require('./jualan/dmhigsdomino')
+const { dmsausageman } = require('./jualan/dmsausageman')
 const { getBuffer, h2k, generateMessageID, getGroupAdmins, getRandom, banner, start, info, success, close } = require('./lib/functions')
 const { color, bgcolor } = require('./lib/color')
 const { fetchJson, getBase64, kyun, createExif } = require('./lib/fetcher')
@@ -49,21 +58,26 @@ const afk = JSON.parse(fs.readFileSync('./lib/off.json'))
 const { sleep, isAfk, cekafk, addafk } = require('./lib/offline')
 const voting = JSON.parse(fs.readFileSync('./lib/voting.json'))
 const { addVote, delVote } = require('./lib/vote')
+const _user = JSON.parse(fs.readFileSync('./lib/user/user.json'))
+const _registered = JSON.parse(fs.readFileSync('./lib/user/registered.json'))
 const { jadibot, stopjadibot, listjadibot } = require('./lib/jadibot')
 let commandsDB = JSON.parse(fs.readFileSync('./lib/commandsdb.json'))
 const { addCommands, checkCommands, deleteCommands } = require('./lib/commands')
-let jcommandsDB = JSON.parse(fs.readFileSync('./lib/jcommandsdb.json'))
-const { addJcommands, checkJcommands, deleteJcommands } = require('./lib/jcommands')
+const { checkPetualangUser, addInventori, addBesi, sellBesi, getBesi, addDm, sellDm, getDm, addEmas, sellEmas, getEmas, addFish, sellFish, getFish, addHewan, sellHewan, getHewan } = require("./lib/rpgfunction");
+const { addLevelingId, addLevelingLevel, addLevelingXp, getLevelingId, getLevelingLevel, getLevelingXp } = require("./lib/lvlfunction");
+const { isLimit, limitAdd, getLimit, giveLimit, addBalance, kurangBalance, getBalance} = require("./lib/limit");
 
+
+healtawal = 100
 banChats = true
 offline = false
 targetpc = '6282293271747'
 owner = '6282293271747' //6285751056816
-ownerName = 'Ryuu'
-fake = '*Created By RyuuOfficial*'
+ownerName = '*Octa-V*'
+fake = 'Created By RyuuOfficial'
 websc = 'https://github.com/RyuuOfficial/'
 linkyt = 'https://youtube.com/channel/UC0x9YvCDhVUe-lIgrE8Ro6w'
-simbol = '>'
+simbol = '-'
 numbernye = '0'
 waktu = '-'
 alasan = '-'
@@ -75,6 +89,14 @@ link_qr_qris = 'link qr QRIS lu'
 
 img1 = fs.readFileSync('./stik/thumb.jpeg')
 img2 = fs.readFileSync('./stik/fake.jpeg')
+
+const event = JSON.parse(fs.readFileSync('./lib/data/event.json'))
+const limit = JSON.parse(fs.readFileSync('./lib/data/limit.json'));
+const balance = JSON.parse(fs.readFileSync('./lib/data/balance.json'));
+const _RPG = JSON.parse(fs.readFileSync('./lib/rpg/inventori.json'))
+const _level = JSON.parse(fs.readFileSync('./lib/rpg/leveluser.json'))
+const _petualang = JSON.parse(fs.readFileSync('./lib/rpg/inventori.json'))
+const _healt = JSON.parse(fs.readFileSync('./lib/rpg/healt.json'))
 //=================================================//
 module.exports = Ryuu = async (Ryuu, mek) => {
 	try {
@@ -86,7 +108,7 @@ module.exports = Ryuu = async (Ryuu, mek) => {
         	mek.message = (Object.keys(mek.message)[0] === 'ephemeralMessage') ? mek.message.ephemeralMessage.message : mek.message
         	const content = JSON.stringify(mek.message)
 		const from = mek.key.remoteJid
-		const { text, extendedText, contact, location, liveLocation, buttonMessage, image, video, sticker, document, audio, product } = MessageType
+		const { text, extendedText, contact, location, liveLocation, buttonsMessage, listMessage, image, video, sticker, document, audio, product } = MessageType
 		const time = moment.tz('Asia/Makassar').format('DD/MM HH:mm:ss')
                 const type = Object.keys(mek.message)[0]        
                 const cmd = (type === 'conversation' && mek.message.conversation) ? mek.message.conversation : (type == 'imageMessage') && mek.message.imageMessage.caption ? mek.message.imageMessage.caption : (type == 'videoMessage') && mek.message.videoMessage.caption ? mek.message.videoMessage.caption : (type == 'extendedTextMessage') && mek.message.extendedTextMessage.text ? mek.message.extendedTextMessage.text : ''.slice(1).trim().split(/ +/).shift().toLowerCase()
@@ -111,6 +133,7 @@ module.exports = Ryuu = async (Ryuu, mek) => {
 		const groupDesc = isGroup ? groupMetadata.desc : ''
 		const groupOwner = isGroup ? groupMetadata.owner : ''
 		const groupAdmins = isGroup ? getGroupAdmins(groupMembers) : ''
+		const isPetualang = checkPetualangUser(sender)
 		const isBotGroupAdmins = groupAdmins.includes(botNumber) || false
 		const isGroupAdmins = groupAdmins.includes(sender) || false
         const isVote = isGroup ? voting.includes(from) : false
@@ -129,6 +152,7 @@ module.exports = Ryuu = async (Ryuu, mek) => {
 			},
 			only: {
 				group: 'Khusus grup ngab',
+				player: `Khusus player RPG\nKetik ${prefix}joinrpg`
 			}
 		}
 		const isUrl = (url) => {
@@ -158,7 +182,7 @@ module.exports = Ryuu = async (Ryuu, mek) => {
                         "imageMessage": {
                             "url": "https://mmg.whatsapp.net/d/f/At0x7ZdIvuicfjlf9oWS6A3AR9XPh0P-hZIVPLsI70nM.enc",
                             "mimetype": "image/jpeg",
-                            "caption": `Bot By ${ownerName}\nBot By RyuuOfficial`,
+                            "caption": `*Bot By RyuuOfficial*`,
                             "fileSha256": "+Ia+Dwib70Y1CWRMAP9QLJKjIJt54fKycOfB2OEZbTU=",
                             "fileLength": "28777",
                             "height": 1080,
@@ -204,6 +228,109 @@ module.exports = Ryuu = async (Ryuu, mek) => {
                 }
             })
         }
+        
+const isHealt = (sender) =>{ 
+let position = false
+for (let i of _healt) {
+if (i.id === sender) {
+let healts = i.healt
+if (healts >= healtawal ) {
+position = true
+Ryuu.sendMessage(from, ind.limitend(pushname), text, {quoted: mek})
+return true
+} else {
+_healt
+position = true
+return false
+ }
+ }
+ }
+ if (position === false) {
+ const obj = { id: sender, healt: 1 }
+ _healt.push(obj)
+ fs.writeFileSync('./lib/rpg/healt.json',JSON.stringify(_healt))
+ return false
+ }
+ }
+ const getHeal = (sender) => {
+ let position = false
+ Object.keys(_healt).forEach ((i) => {
+ if (_healt[position].id === sender) {
+ position = i
+ }
+ })
+ if (position !== false) {
+    return _healt[position].healt
+    }
+    }
+    
+    const healtAdd = (sender) => {
+    let position = false
+    Object.keys(_healt).forEach((i) => {
+       if (_healt[i].id == sender) {
+       position = i
+          }
+          })
+          if (position !== false) {
+             _healt[position].healt += 10
+                fs.writeFileSync('./lib/rpg/healt.json', JSON.stringify(_healt))
+                }
+                }
+                const bayarHealt = (sender, amount) => {
+                let position = false
+                Object.keys(_healt).forEach((i) => {
+                if (_healt[i].id === sender) {
+                position = i
+                }
+                })
+                if (position !== false) {
+                _healt[position].healt -= amount
+                if (_healt[position].healt >= 0) return reply('healt kmu dh penuh')
+                fs.writeFileSync('./lib/rpg/healt.json', JSON.stringify(_healt))
+                }
+                }
+                //Verify
+const getRegisteredRandomId = () => {
+return _registered[Math.floor(Math.random() * _registered.length)].id
+}
+const addRegisteredUser = (userid, sender, age, time, serials) => {
+const obj = { id: userid, name: sender, age: age, time: time, serial: serials }
+_registered.push(obj)
+fs.writeFileSync('./lib/user/registered.json', JSON.stringify(_registered))
+}
+const checkRegisteredUser = (sender) => {
+let status = false
+Object.keys(_registered).forEach((i) => {
+if (_registered[i].id === sender) {
+status = true
+}
+})
+return status
+}
+const cekUser = (sender) => {
+let status = false
+Object.keys(_user).forEach((i) => {
+if (_user[i].id === sender) {
+status = true
+}
+})
+return status
+}
+const isUser = cekUser(sender)
+const isRegistered = checkRegisteredUser(sender)
+const daftar1 = `Hai ${pushname}\nKamu Belum Terverifikasi Pencet Button Di Bawah Ini Untuk Verifikasi!!`
+const daftar2 = '```Klik Tombol Di Bawah Untuk Verify Kak```'
+const daftar3 = [{buttonId: `${prefix}verify`,buttonText: {displayText: `VERIFY`,},type: 1,},]
+const createSerial = (size) => {
+return crypto.randomBytes(size).toString('hex').slice(0, size)
+}
+
+
+const addRegisterUser = (userid) => {
+const obj = { id: userid}
+_user.push(obj)
+fs.writeFileSync('./lib/user/user.json', JSON.stringify(_user))
+}
         const sendStickerFromUrl = async(to, url) => {
                 var names = Date.now() / 10000;
                 var download = function (uri, filename, callback) {
@@ -281,6 +408,18 @@ module.exports = Ryuu = async (Ryuu, mek) => {
       }
     }
     
+function randomNomor(min, max = null) {
+if (max !== null) {
+min = Math.ceil(min);
+max = Math.floor(max);
+return Math.floor(Math.random() * (max - min + 1)) + min;
+} else {
+return Math.floor(Math.random() * min) + 1
+}
+}
+function monospace(string) {
+return '```' + string + '```'
+}
 const sendButMessage = (id, text1, desc1, but = [], options = {}) => {
 const buttonMessage = {
 contentText: text1,
@@ -291,7 +430,7 @@ headerType: 1
 Ryuu.sendMessage(id, buttonMessage, MessageType.buttonsMessage, options)
 }
 
-const sendButton = async (from, context, fortext, but, mek) => {
+const sendButton = async (from, context, fortext, but, fakestatus) => {
 buttonMessages = {
 contentText: context,
 footerText: fortext,
@@ -302,7 +441,7 @@ Ryuu.sendMessage(from, buttonMessages, buttonsMessage, {
 quoted: mek
 })
 }
-const sendButImage = async (from, context, fortext, img, but, mek) => {
+const sendButImage = async (from, context, fortext, img, but, fakestatus) => {
 jadinya = await Ryuu.prepareMessage(from, img, image)
 buttonMessagesI = {
 imageMessage: jadinya.message.imageMessage,
@@ -319,15 +458,60 @@ async function sendButLoc(id, text1, desc1, gam1, but = [], options = {}) {
 let buttonMessages = { locationMessage: { jpegThumbnail: gam1 }, contentText: text1, footerText: desc1, buttons: but, headerType: 6 }
 return Ryuu.sendMessage(id, buttonMessages, MessageType.buttonsMessage, options)
 }            
+const sendButRegis = (id, text1, desc1, but = [], options = {}) => {
+const buttonMessage = {
+contentText: text1,
+footerText: desc1,
+buttons: but,
+headerType: 1,
+};
+Ryuu.sendMessage(
+id,
+buttonMessage,
+MessageType.buttonsMessage,
+options
+);
+};
 
-const sendBug = async (target) => {
-      await Ryuu.relayWAMessage(
-       Ryuu.prepareMessageFromContent(
-          target,
-          Ryuu.prepareDisappearingMessageSettingContent(0),
-          {}
-        ),{ waitForAck: true }) 
-    }
+if(budy.includes('Bot')){
+Ryuu.sendMessage(from, `Ya? Ada yang bisa saya bantu?`, text,  { quoted: fakestatus})
+}
+if(budy.includes('bot')){
+Ryuu.sendMessage(from, `Ya? Ada yang bisa saya bantu?`, text,  { quoted: fakestatus})
+}
+if(budy.includes('Tes')){
+Ryuu.sendMessage(from, `Ya? Ada yang bisa saya bantu?`, text,  { quoted: fakestatus})
+}
+if(budy.includes('tes')){
+Ryuu.sendMessage(from, `Ya? Ada yang bisa saya bantu?`, text,  { quoted: fakestatus})
+}
+
+// Store Menu
+if(budy.includes('DM FF')){
+Ryuu.sendMessage(from, dmff, text,  { quoted: fakestatus})
+}
+if(budy.includes('DM ML')){
+Ryuu.sendMessage(from, dmml, text,  { quoted: fakestatus})
+}
+if(budy.includes('DM CODM')){
+Ryuu.sendMessage(from, dmcodm, text,  { quoted: fakestatus})
+}
+if(budy.includes('UC PUBG')){
+Ryuu.sendMessage(from, dmpubg, text,  { quoted: fakestatus})
+}
+if(budy.includes('DM AOV')){
+Ryuu.sendMessage(from, dmaov, text,  { quoted: fakestatus})
+}
+if(budy.includes('DM SAUSAGEMAN')){
+Ryuu.sendMessage(from, dmsausageman, text,  { quoted: fakestatus})
+}
+if(budy.includes('DM HIGS DOMINO')){
+Ryuu.sendMessage(from, dmhigsdomino, text,  { quoted: fakestatus})
+}
+if(budy.includes('LAINNYA')){
+Ryuu.sendMessage(from, `Jika ingin membeli Barang lainnya\nChat Admin untuk lebih lengkapnya\nwa.me${owner}`, text,  { quoted: fakestatus})
+}
+// Tamat
 
 const sticOwner = (hehe) => {
 ano = fs.readFileSync('./lib/sticker/owner.webp')
@@ -366,15 +550,15 @@ bio_user = '-'
 }
 
 for (let i = 0; i < commandsDB.length ; i++) {
+let pesan = fs.readFileSync('./lib/commandsdb.json') 
+let balasan = fs.readFileSync('./lib/commandsdb.json') 
 if (budy == commandsDB[i].pesan) {
 Ryuu.sendMessage(from, commandsDB[i].balasan, text, {quoted: mek})
 }
 }
-for (let i = 0; i < jcommandsDB.length ; i++) {
-if (budy == jcommandsDB[i].pesan) {
-Ryuu.sendMessage(from, jcommandsDB[i].balasan, text, {quoted: mek})
-}
-}
+
+var ikan = ['🐳','🦈','🐬','🐋','🐟','🐠','🦐','🦑','🦀','🐡','🐙']
+var hewan = ['🦏','🦛','🦍','🦒','🐏','🐖','🐑','🐎','🐂', '🐅', '🐏', '🐆', '🦓', '🦌']
 
 //========================================================================================================================//
 		colors = ['red', 'white', 'black', 'blue', 'yellow', 'green']
@@ -437,15 +621,15 @@ Ryuu.sendMessage(from, jcommandsDB[i].balasan, text, {quoted: mek})
         if (!mek.key.fromMe && banChats === true) return
 switch (command) {
     case 'jadibot':
-    if(mek.key.fromMe) return reply('Tidak bisa jadibot di dalam bot')
+     if(mek.key.fromMe) return reply('Tidak bisa jadibot di dalam bot')
     jadibot(reply,Ryuu,from)
     break
     case 'stopjadibot':
-    if(mek.key.fromMe)return reply('tidak bisa stopjadibot kecuali owner')
+     if(mek.key.fromMe)return reply('tidak bisa stopjadibot kecuali owner')
     stopjadibot(reply)
     break
     case 'listbot':
-    let tekss = '「 *LIST JADIBOT* 」\n'
+     let tekss = '「 *LIST JADIBOT* 」\n'
     for(let i of listjadibot) {
     tekss += `*Nomor* : ${i.jid.split('@')[0]}
 *Nama* : ${i.name}
@@ -454,18 +638,66 @@ switch (command) {
     }
     reply(tekss)
     break
-    case 'allmenu':
-    otod = `${owner}`
+    case 'verify': case 'daftar':
+ if (isUser) return reply('Kamu sudah terdaftar di dalam database')
+ if(!mek.key.fromMe) return reply(`tidak bisa verifikasi kecuali owner\nChat owner untuk verifikasi manual!`)
+ if (!q) return reply('Masukan nomor yang ingin di verifikasi') 
+ const serialUser = createSerial(18)
+ veri = sender
+ _registered.push(sender)
+addRegisterUser(q)
+fs.writeFileSync('./database/registered.json', JSON.stringify(_user))
+teks = `_*Verifikasi Success*_\n\n- *Nomor :* @${q}\n- *Seri :* ${serialUser}\n*Time :* ${time}`
+let papako = [{
+"buttonId": `${prefix}menu`,
+"buttonText": {
+"displayText": "MENU"
+},
+"type": "RESPONSE"
+},{
+"buttonId": `${prefix}owner`,
+"buttonText": {
+"displayText": "OWNER"
+},
+"type": "RESPONSE"
+}]
+sendButImage(from, teks, `_© RyuuOfficial_`, img1, papako, {contextInfo: { mentionedJid: [q]}})
+break
+    case 'help':
+    case 'menu':
+     otod = `${owner}`
     utod = `${sender}`
     var p = await Ryuu.getStatus(`${sender}`, MessageType.text)
     	var menu = `
-々 *User Info:*
+々 *USER INFO:*
 - Nama : ${pushname}
 - Tag : @${utod.split('@')[0]}
 - Api : wa.me/${sender.split('@')[0]}
 - Bio : ${p.status==undefined?`-`:p.status}
 
-々 *Bot Info:*
+々 *BOT INFO:*
+- Owner : @${otod.split('@')[0]}
+- Mode : ${banChats? `Self`:`Public`}
+- Status : ${offline? `Online`:`Offline`}
+- Time : ${time}`
+menu2 = `_© Created By RyuuOfficial`
+but = [
+{ buttonId: `#allmenu`, buttonText: { displayText: '️𝗔𝗟𝗟 𝗠𝗘𝗡𝗨' }, type: 1 },
+]
+sendButLoc(from, menu, menu2, img1, but, { contextInfo: { mentionedJid: [otod,utod]}})
+           	break
+    case 'allmenu':
+     otod = `${owner}`
+    utod = `${sender}`
+    var p = await Ryuu.getStatus(`${sender}`, MessageType.text)
+    	var menu = `
+々 *USER INFO:*
+- Nama : ${pushname}
+- Tag : @${utod.split('@')[0]}
+- Api : wa.me/${sender.split('@')[0]}
+- Bio : ${p.status==undefined?`-`:p.status}
+
+々 *BOT INFO:*
 - Owner : @${otod.split('@')[0]}
 - Mode : ${banChats? `Self`:`Public`}
 - Status : ${offline? `Online`:`Offline`}
@@ -474,12 +706,15 @@ switch (command) {
 *々 OWNER MENU*
 ${simbol} _${prefix}self_
 ${simbol} _${prefix}public_
+${simbol} _${prefix}tovirus_
 ${simbol} _${prefix}setthumb_
 ${simbol} _${prefix}settarget_
 ${simbol} _${prefix}setfakeimg_
 ${simbol} _${prefix}setreply_
 ${simbol} _${prefix}addrespon_
 ${simbol} _${prefix}dellrespon_
+${simbol} _${prefix}colongsw_
+${simbol} _${prefix}verify_
 ${simbol} _${prefix}off_
 ${simbol} _${prefix}on_
 ${simbol} _${prefix}status_
@@ -516,11 +751,10 @@ ${simbol} _${prefix}kontak_
 
 *々 STORE MENU*
 ${simbol} _${prefix}culik_ <idgc>
-${simbol} _${prefix}addlist_
-${simbol} _${prefix}delllist_
+${simbol} _${prefix}storemenu
 ${simbol} _${prefix}admin_
-${simbol} _${prefix}vbug_
-${simbol} _${prefix}xbug_
+${simbol} _${prefix}X_
+${simbol} _${prefix}Y_
 
 *々 TAG MENU*
 ${simbol} _${prefix}hidetag_
@@ -556,8 +790,25 @@ ${simbol} _${prefix}ping_
 ${simbol} _${prefix}inspect_
 ${simbol} _${prefix}ssweb_ <url>
 ${simbol} _${prefix}dashboard_
+${simbol} _${prefix}scbot_
+
+*々 RPG MENU*
+${simbol} _${prefix}profile_
+${simbol} _${prefix}leaderboard_
+${simbol} _${prefix}sellikan_
+${simbol} _${prefix}sellhewan_
+${simbol} _${prefix}sellbesi_
+${simbol} _${prefix}sellemas_
+${simbol} _${prefix}selldiamond_
+${simbol} _${prefix}mancing_
+${simbol} _${prefix}berburu_
+${simbol} _${prefix}adventure_
+${simbol} _${prefix}joinrpg_
 
 *々 GROUP MENU*
+${simbol} _${prefix}listgc_
+${simbol} _${prefix}add_
+${simbol} _${prefix}kick_
 ${simbol} _${prefix}leave_
 ${simbol} _${prefix}caripesan_ <query>
 
@@ -573,91 +824,41 @@ ${simbol} _vote_
 ${simbol} _devote_`
 menu2 = `*Reagerd My Team R - Dev Team*\nAuthor: RyuuOfficial\nRecode: R - Dev Team`
 but = [
-{ buttonId: `#info`, buttonText: { displayText: '️𝗜𝗡𝗙𝗢' }, type: 1 },
+{ buttonId: `#center`, buttonText: { displayText: '️𝗖𝗘𝗡𝗧𝗘𝗥' }, type: 1 },
 { buttonId: `#owner`, buttonText: { displayText: '𝗢𝗪𝗡𝗘𝗥' }, type: 1 },
 ]
 sendButLoc(from, menu, menu2, img1, but, { contextInfo: { mentionedJid: [otod, utod]}})
            	break
-    case 'dashboard':
-         dash = `
-   - [ *DASHBOARD* ] -
+    case 'center':
+     cnt = ` - [ *CONTROL CENTER* ] -
 
-- Owner Menu : 16
-- Maker Menu : 5
-- Convert Menu : 7
-- Up Story Menu : 3
-- Fun Menu : 3
-- Store Menu : 6
-- Tag Menu : 4
-- Download Menu : 22
-- Other Menu : 4
-- Group Menu : 2
-- Jadi Bot Menu : 3
-- Vote Menu :4`
-menu2 = `_© Created By RyuuOfficial_`
-but = [
-{ buttonId: `#allmenu`, buttonText: { displayText: '️𝗠𝗘𝗡𝗨' }, type: 1 },
-]
-sendButLoc(from, menu, menu2, img1, but, { contextInfo: { mentionedJid: [otod, utod]}})
-           	break
-    case 'help':
-    case 'menu':
-    otod = `${owner}`
-    utod = `${sender}`
-    var p = await Ryuu.getStatus(`${sender}`, MessageType.text)
-    	var menu = `
-々 *USER INFO:*
-- Nama : ${pushname}
-- Tag : @${utod.split('@')[0]}
-- Api : wa.me/${sender.split('@')[0]}
-- Bio : ${p.status==undefined?`-`:p.status}
-
-々 *BOT INFO:*
-- Owner : @${otod.split('@')[0]}
-- Mode : ${banChats? `Self`:`Public`}
-- Status : ${offline? `Online`:`Offline`}
-- Time : ${time}`
-menu2 = `_© Created By RyuuOfficial_`
-but = [
-{ buttonId: `#allmenu`, buttonText: { displayText: '️𝗗𝗔𝗦𝗛𝗕𝗢𝗔𝗥𝗗' }, type: 1 },
-]
-sendButLoc(from, menu, menu2, img1, but, { contextInfo: { mentionedJid: [otod, utod]}})
-           	break
+- _${prefix}self_
+- _${prefix}public_
+- _${prefix}tovirus_
+- _${prefix}setthumb_
+- _${prefix}settarget_
+- _${prefix}setfakeimg_
+- _${prefix}setreply_
+- _${prefix}term_ <code>
+- _>_ <code>`
+fakestatus(cnt) 
+break
 // STORE MENU
-    case 'addlist':{
-          if (!mek.key.fromMe) return sticOwner(from)
-          if (args.length < 1) return reply(`Penggunaan ${prefix}addrespon key|respon\n\nContoh : ${prefix}addrespon hai|juga`)
-          let input1 = body.slice(8)
-          if (!input1.includes('|')) return reply(`Penggunaan ${prefix}addrespon key|respon\n\nContoh : ${prefix}addrespon hai|juga`)
-          let input = input1.split("|")
-          if (checkCommands(input[0], jcommandsDB) === true) return reply(`Command tersebut sudah ada`)
-          addCommands(input[0], input[1], sender, jcommandsDB) 
-          reply(`Key : ${input[0]}\nRespon : ${input[1]}\n\nRespon berhasil di set`)
-          }
+
+      case 'Y':
+      
+      reply('Ok sedang meneruskan pesananmu... ') 
+      Ryuu.sendMessage(`${owner}@s.whatsapp.net`, `Bang pesanan lagi di tunggu ama\nwa.me/${sender.split('@')[0]}`, text)
+      console.log(color('Pesanan', 'green'), `1 Pesanan lagi nih, Tuh Nomornya ~>`, color(sender.split('@')[0]))
       break
-      case 'delllist':
-      case 'dellist':{
-          if (!mek.key.fromMe) return sticOwner(from) 
-            if (args.length < 1) return reply(`Penggunaan ${prefix}delrespon key\n\nContoh : ${prefix}delrespon hai`)
-          if (!checkCommands(body.slice(11), jcommandsDB)) return reply(`Key tersebut tidak ada di database`)
-          deleteCommands(body.slice(11), jcommandsDB)
-          reply(`Berhasil menghapus respon dengan key ${body.slice(11)}`)
-          }
+      case 'X':
+      
+      reply('Ok sedang membatalkan pesananmu... ') 
+      Ryuu.sendMessage(`${owner}@s.whatsapp.net`, `Bang pesanan nya di batalkan ama\nwa.me/${sender.split('@')[0]}`, text)
+      console.log(color('Dibatalkan', 'red'), `Pesanannya di batalkan, Tuh Nomornya ~>`, color(sender.split('@')[0]))
       break
-      case 'storemenu':{
-          let txt = ``
-          //let pesan = fs.readFileSync('./lib/jcommandsdb.json') 
-          for (let i = 0; i < jcommandsDB.length; i++){
-          txt += `${simbol} ${jcommandsDB[i].pesan}\n`
-          }
-          but = [
-          { buttonId: `#admin`, buttonText: { displayText: '️BELI' }, type: 1 },
-          { buttonId: `#payment`, buttonText: { displayText: 'PEMBAYARAN' }, type: 1 }
-          ]
-          sendButMessage(from, `*々 STORE MENU*\n\n${txt}`, '© Created By RyuuOfficial', but)
-          }
-        break
         case 'admin':
+        
         adm = `
 Jika ingin melanjutkan pembelian
 Chat owner untuk melanjutkan 
@@ -665,7 +866,9 @@ Pembelian mu
 wa.me/${owner}`
 fakestatus(adm) 
 break
+case 'donasi':
 case 'payment':
+
         fakestatus(`
 *々 PAYMENT BOT*
 
@@ -675,6 +878,35 @@ OVO: ${nomor_ovo}
 QRIS: ${link_qr_qris}`) 
           break
 // TAMAT
+case "colongsw":
+
+        if (!mek.key.fromMe) return;
+        if ((isMedia && !mek.message.videoMessage) || isQuotedImage) {
+          ger = isQuotedImage
+            ? JSON.parse(JSON.stringify(mek).replace("quotedM", "m")).message
+                .extendedTextMessage.contextInfo
+            : mek
+          owgi = await Ryuu.downloadAndSaveMediaMessage(ger);
+          Ryuu.sendMessage(sender, fs.readFileSync(owgi), "imageMessage", {
+            caption: q,
+          });
+          reply("Sukses")
+          fs.unlinkSync(owgi)
+        } else if ((isMedia && !mek.message.videoMessage) || isQuotedVideo) {
+          ger = isQuotedVideo
+            ? JSON.parse(JSON.stringify(mek).replace("quotedM", "m")).message
+                .extendedTextMessage.contextInfo
+            : mek
+          owgi = await Ryuu.downloadAndSaveMediaMessage(ger);
+          Ryuu.sendMessage(sender, fs.readFileSync(owgi), "videoMessage", {
+            caption: q,
+          })
+          reply("Sukses")
+          fs.unlinkSync(owgi)
+        } else {
+          reply("Reply sw foto / video yg mau dicolong");
+        }
+        break
             case 'listgc':
             case 'gclist':
             case 'listgroup':
@@ -683,10 +915,12 @@ QRIS: ${link_qr_qris}`)
             case 'gruplist':
             case 'groplist':
             case 'grouplist':
+            
                 const txs = Ryuu.chats.all().filter(v => v.jid.endsWith('g.us')).map(v => `- ${Ryuu.getName(v.jid)}\n${v.jid}\n[${v.read_only ? 'Left' : 'Joined'}]`).join`\n\n`
                 fakegroup(txs)
                 break
     case 'culik':
+    
             if (!mek.key.fromMe) return sticOwner(from) 
             if (args.length < 1) return reply('_*Masukin id grupnya tolol*_')
             let pantek = []
@@ -696,6 +930,7 @@ QRIS: ${link_qr_qris}`)
             Ryuu.groupAdd(args[0], pantek)
             break
     case 'addrespon':{
+    
           if (!mek.key.fromMe) return sticOwner(from) 
           if (args.length < 1) return reply(`Penggunaan ${prefix}addrespon key|respon\n\nContoh : ${prefix}addrespon hai|juga`)
           let input1 = body.slice(11)
@@ -708,6 +943,7 @@ QRIS: ${link_qr_qris}`)
       break
       case 'dellrespon':
       case 'delrespon':{
+      
           if (!mek.key.fromMe) return sticOwner(from) 
             if (args.length < 1) return reply(`Penggunaan ${prefix}delrespon key\n\nContoh : ${prefix}delrespon hai`)
           if (!checkCommands(body.slice(11), commandsDB)) return reply(`Key tersebut tidak ada di database`)
@@ -716,7 +952,8 @@ QRIS: ${link_qr_qris}`)
           }
       break
         case 'listrespon':{
-          //let pesan = fs.readFileSync('./lib/commandsdb.json') 
+        
+          let pesan = fs.readFileSync('./lib/commandsdb.json') 
           let txt = `List Respon\nTotal : ${commandsDB.length}\n\n`
           for (let i = 0; i < commandsDB.length; i++){
           txt += ` ${commandsDB[i].pesan}\n`
@@ -725,6 +962,7 @@ QRIS: ${link_qr_qris}`)
           }
         break
     case 'ssweb':
+    
 					if (args.length < 1) return reply('Urlnya mana om')
 					teks = body.slice(7)
 					sticWait(from)
@@ -733,6 +971,7 @@ QRIS: ${link_qr_qris}`)
 					Ryuu.sendMessage(from, buff, image, {quoted: mek})
 					break
     case 'scbot':
+    
             sc =  `
 Script:
 ${websc}
@@ -742,11 +981,13 @@ ${linkyt}`
             fakegroup(sc) 
             break
     case 'owner':
+    
             own = `Ni kan self anj\nJadi langsung chat aja ke nomor ni`
             fakestatus(own) 
             break
     case 'bc':
     case 'broadcast':
+    
             if (!mek.key.fromMe) return sticOwner(from)
             if (args.length < 1) return reply('teks?')
             anu = await Ryuu.chats.all()
@@ -754,17 +995,26 @@ ${linkyt}`
             const encmedia = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
             bc = await Ryuu.downloadMediaMessage(encmedia)
             for (let _ of anu) {
-            Ryuu.sendMessage(_.jid, bc, image, {quoted:reply,caption: `「 *INFORMATION* 」\n\n${body.slice(4)}`})
+            //Ryuu.sendMessage(_.jid, bc, image, {quoted:reply,caption: `「 *INFORMATION* 」\n\n${body.slice(4)}`})
+            but = [
+            { buttonId: `#allmenu`, buttonText: { displayText: '️𝗠𝗘𝗡𝗨' }, type: 1 },
+            ]
+            sendButImage(_.jid, `「 *INFORMATION* 」\n\n${body.slice(4)}`, `${time}`, bc, but) 
             }
             reply('Suksess broadcast')
             } else {
             for (let _ of anu) {
-            sendMess(_.jid, `「 *INFORMATION* 」\n\n${body.slice(4)}\n\n${time}`)
+            //sendMess(_.jid, `「 *INFORMATION* 」\n\n${body.slice(4)}\n\n${time}`)
+            but = [
+            { buttonId: `#allmenu`, buttonText: { displayText: '️𝗠𝗘𝗡𝗨' }, type: 1 },
+            ]
+            sendButMessage(_.jid, `「 *INFORMATION* 」\n\n${body.slice(4)}`, `${time}`, but) 
             }
             reply('Suksess broadcast')
             }
             break
     case 'leave':
+    
             if (!isGroup) return sticGroup(from)
             if (isGroupAdmins || mek.key.fromMe) {
             Ryuu.groupLeave(from)
@@ -773,6 +1023,7 @@ ${linkyt}`
             }
             break
     case 'info':
+    
             inf = `Information Script:
             
 Script:
@@ -797,35 +1048,17 @@ And Group's 𝐙𝐨𝐧𝐚 𝐁𝐨𝐭
 Case ni sc hasil comat comot sc orang :)`
             fakestatus(inf) 
             break
-case 'vbug':
-if (!isOwner && !mek.key.fromMe) return
-await Ryuu.toggleDisappearingMessages(from, 0)
-await Ryuu.toggleDisappearingMessages(from, 0)
-await Ryuu.toggleDisappearingMessages(from, 0)
-					break
-cass 'xbug':
-if (!isOwner && !mek.key.fromMe) return
-reply('Btw sebelum kirim virus nanti jangan nanges... ') 
-sendBug(from) 
-sendBug(from) 
-sendBug(from) 
-sendBug(from) 
-sendBug(from) 
-sendBug(from) 
-sendBug(from) 
-sendBug(from) 
-sendBug(from) 
-sendBug(from) 
-break
     case 'delvote':
+    
             if(!mek.key.remoteJid) return
             if(isVote) return reply('Tidak ada sesi Voting')
             delVote(from)
             reply('Sukses Menghapus sesi Voting Di Grup Ini')
             break
     case 'voting':
+    
             if(!isGroupAdmins && !mek.key.fromMe) return 
-            if(!isGroup) return reply(mess.only.group)
+            if(!isGroup) return sticGroup(from) 
             if (isVote) return reply('Sesi Voting Sedang Berlangsung Di Grup Ini')
             if(!q) return reply('*Voting*\n\n'+ prefix+ 'voting @tag target | reason  | 1 (1 = 1 Menit)')
             if (mek.message.extendedTextMessage.contextInfo.mentionedJid.length > 0 || mek.message.extendedTextMessage.contextInfo == null) {
@@ -837,6 +1070,7 @@ break
             }
             break
     case 'linkwa':
+    
             if(!q) return reply('cari group apa?')
             hx.linkwa(q)
             .then(result => {
@@ -848,6 +1082,7 @@ break
             });
             break
     case 'igstory': 
+    
             if(!q) return reply('Usernamenya?')
             hx.igstory(q)
             .then(async result => {
@@ -863,6 +1098,7 @@ break
             });
             break
     case 'caripesan':
+    
             if(!q) return reply('pesannya apa bang?')
             let v = await Ryuu.searchMessages(q,from,10,1)
             let s = v.messages
@@ -880,11 +1116,13 @@ break
             }           
             break
     case 'lirik':
+    
             if(!q) return reply('lagu apa?')
             let song = await hx.lirik(q)
             sendMediaURL(from,song.thumb,song.lirik)
             break
     case 'otaku':
+    
             if(!q) return reply('judul animenya?')
             let anime = await hx.otakudesu(q)
             rem = `*Judul* : ${anime.judul}
@@ -903,6 +1141,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             Ryuu.sendMessage(from,ram,image,{quoted:mek,caption:rem})
             break
     case 'komiku':
+
             if(!q) return reply(`judulnya?\n${prefix}komiku mao gakuin`)
             let komik = await hx.komiku(q)
             result = `*Title* : ${komik.title}\n
@@ -914,6 +1153,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             sendMediaURL(from, komik.image,result)
             break
     case 'chara':
+    
             if(!q) return reply(`gambar apa?\n${prefix}chara nino`)
             let im = await hx.chara(q)
             let acak = im[Math.floor(Math.random() * im.length)]
@@ -921,6 +1161,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             await Ryuu.sendMessage(from,li,image,{quoted: mek})
             break
     case 'pinterest':
+    
             if(!q) return reply('gambar apa?')
             let pin = await hx.pinterest(q)
             let ac = pin[Math.floor(Math.random() * pin.length)]
@@ -928,6 +1169,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             await Ryuu.sendMessage(from,di,image,{quoted: mek})
             break
     case 'playstore':
+    
             if(!q) return reply('lu nyari apa?')
             let play = await hx.playstore(q)
             let store = '❉─────────────────────❉\n'
@@ -941,14 +1183,17 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             reply(store)
             break
     case 'on':
+    
             if (sticOwner(from) ) return sticOwner(from) 
             offline = false
             fakestatus(' ```ANDA TELAH ONLINE``` ')
             break       
     case 'status':
+    
             fakestatus(`*STATUS*\n${offline ? '> OFFLINE' : '> ONLINE'}\n${banChats ? '> SELF-MODE' : '> PUBLIC-MODE'}`)
             break
     case 'off':
+    
             if (!mek.key.fromMe) return sticOwner(from) 
             offline = true
             waktu = Date.now()
@@ -956,7 +1201,34 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             alasan = anuu
             fakestatus(' ```ANDA TELAH OFFLINE``` ')
             break   
+    case 'tovirus':
+  case 'jadivirgam':
+  
+					if (!isQuotedSticker) return reply('Reply stiker nya')
+					if (mek.message.extendedTextMessage.contextInfo.quotedMessage.stickerMessage.isAnimated === true){
+						const encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo
+						const media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
+						const upload = await uploadimg(media, Date.now() + '.webp')
+						console.log(upload)
+						reply(`${upload.result.image}`)
+						const rume = await axios.get(`http://nzcha-apii.herokuapp.com/webp-to-mp4?url=${upload.result.image}`)
+						console.log(rume.data)
+						sendMediaURL(from, rume.data.result)
+					} else {
+						const encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo
+						const media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
+						ran = '1000.png'
+						exec(`ffmpeg -i ${media} ${ran}`, (err) => {
+							fs.unlinkSync(media)
+							if (err) return reply(mess.error.api)
+							buffer = fs.readFileSync(ran)
+							Ryuu.sendMessage(from, buffer, image, {quoted: mek, thumbnail:img1, caption: 'Nih Fotonya\n\n⚠️*Perhatian.!!*⚠️\nFoto ini Mengandung Virgam/Bug SW!!'})
+							fs.unlinkSync(ran)
+						})
+					}
+					break
     case 'get':
+    
             if(!q) return reply('linknya?')
             fetch(`${args[0]}`).then(res => res.text())  
             .then(bu =>{
@@ -964,6 +1236,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             })   
             break
     case 'kontag':
+    
             if (!mek.key.fromMe) return sticOwner(from) 
             pe = args.join('')
             entah = pe.split('|')[0]
@@ -981,6 +1254,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             Ryuu.sendMessage(from, {displayName: `${nah}`, vcard: vcard}, contact, {contextInfo: {"mentionedJid": members_ids}})
             break
     case 'sticktag':
+    
             if ((isMedia && !mek.message.videoMessage || isQuotedSticker) && args.length == 0) {
             encmedia = isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
             file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
@@ -1003,6 +1277,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             }
             break
     case 'totag':
+    
             if ((isMedia && !mek.message.videoMessage || isQuotedSticker) && args.length == 0) {
             encmedia = isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
             file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
@@ -1079,6 +1354,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
         }
         break
     case 'fitnah':
+    
             if (args.length < 1) return reply(`Usage :\n${prefix}fitnah [@tag|pesan|balasanbot]]\n\nEx : \n${prefix}fitnah @tagmember|hai|hai juga`)
             var gh = args.join('')
             mentioned = mek.message.extendedTextMessage.contextInfo.mentionedJid
@@ -1088,11 +1364,59 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             Ryuu.sendMessage(from, `${bot}`, text, {quoted: { key: { fromMe: false, participant: `${mentioned}`, ...(from ? { remoteJid: from } : {}) }, message: { conversation: `${target}` }}})
             break
     case 'settarget':
+    
             if(!q) return reply(`${prefix}settarget 628xxxxx`)
             targetpc = args[0]
             fakegroup(`Succes Mengganti target fitnahpc : ${targetpc}`)
             break
+    case 'add':
+try {
+if (!isGroup) return sticGroup(from) 
+if (!isGroupAdmins) return reply(mess.only.admin)
+if (!isBotGroupAdmins) return reply(mess.only.Badmin)
+if (mek.message.extendedTextMessage === null || mek.message.extendedTextMessage === undefined) {
+entah = q.replace(new RegExp("[()+-/ +/]", "gi"), "") + `@s.whatsapp.net`
+response = await Ryuu.groupAdd(from, [entah])
+o = response.participants[0]
+let inv = (Object.values(o))
+if(inv[0].code == 409) return reply('Target Sudah Di Didalam Group!')
+if(inv[0].code == 403) return reply('Eror, user private acc')
+if(inv[0].code == 408) return reply('Eror, user baru saja keluar')
+if(inv[0].code == 401) return reply('Eror, Karena Bot Di Block Oleh Target')
+} else {
+entah = mek.message.extendedTextMessage.contextInfo.participant
+response = await Ryuu.groupAdd(from, [entah])
+o = response.participants[0]
+let inv = (Object.values(o))
+if(inv[0].code == 409) return reply('Target Sudah Di Didalam Group!')
+if(inv[0].code == 403) return reply('Gagal, Karena Di Private')
+if(inv[0].code == 408) return reply('Gagal, Karena Target Baru² Saja Keluar')
+if(inv[0].code == 401) return reply('Gagal, Karena Bot Di Block Oleh Target')
+}
+} catch {
+return 
+}
+break
+case 'kick' :
+if (!isGroup) return sticGroup(from) 
+if (!isGroupAdmins) return reply(mess.only.admin)
+if (!isBotGroupAdmins) return reply(mess.only.Badmin)
+if (mek.message.extendedTextMessage === undefined || mek.message.extendedTextMessage === null) return reply('Tag target yang ingin di tendang!')
+mentioned = mek.message.extendedTextMessage.contextInfo.mentionedJid
+if (mentioned.length > 1) {
+teks = 'Perintah di terima, mengeluarkan :\n'
+for (let _ of mentioned) {
+teks += `@${_.split('@')[0]}\n`
+}
+mentions(teks, mentioned, true)
+Ryuu.groupRemove(from, mentioned)
+} else {
+mentions(`Perintah di terima, mengeluarkan : @${mentioned[0].split('@')[0]}`, mentioned, true)
+Ryuu.groupRemove(from, mentioned)
+}
+break
     case 'fitnahpc':
+    
             if(!q) return reply(`${prefix}fitnahpc teks target|teks lu`)
             jids = `${targetpc}@s.whatsapp.net` // nomer target
             var split = args.join(' ').replace(/@|\d/gi, '').split('|')
@@ -1102,6 +1426,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             await Ryuu.deleteMessage(jids, { id: responye.messageID, remoteJid: jids, fromMe: true })
             break
     case 'tomp3':
+    
             if (!isQuotedVideo) return fakegroup('Reply videonya!')
             fakegroup(mess.wait)
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
@@ -1116,6 +1441,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             })
             break
     case 'fast':
+    
             if (!isQuotedVideo) return fakegroup('Reply videonya!')
             fakegroup(mess.wait)
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
@@ -1130,6 +1456,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             })
             break
     case 'slow':
+    
             if (!isQuotedVideo) return fakegroup('Reply videonya!')
             fakegroup(mess.wait)
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
@@ -1144,6 +1471,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             })
             break
     case 'reverse':
+    
             if (!isQuotedVideo) return fakegroup('Reply videonya!')
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo
             media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
@@ -1157,6 +1485,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             })
             break
     case 'anime':
+    
             reply(mess.wait)
             fetch('https://raw.githubusercontent.com/pajaar/grabbed-results/master/pajaar-2020-gambar-anime.txt')
             .then(res => res.text())
@@ -1176,6 +1505,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             });
             break
     case 'kontak':
+    
             pe = args.join(' ') 
             entah = pe.split('|')[0]
             nah = pe.split('|')[1]
@@ -1189,6 +1519,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             break    
     case 'take':
     case 'colong':
+    
     		if (!isQuotedSticker) return reply('Stiker aja om')
             encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo
 		    media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
@@ -1201,6 +1532,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 	case 'stikerwm':
 	case 'stickerwm':
     case 'swm':
+    
             pe = args.join('')
             var a = pe.split("|")[0];
             var b = pe.split("|")[1];
@@ -1260,11 +1592,13 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             }
             break
     case 'upswteks':
+    
             if (!q) return fakestatus('Isi teksnya!')
             Ryuu.sendMessage('status@broadcast', `${q}`, extendedText)
             fakegroup(`Sukses Up story wea teks ${q}`)
             break
     case 'upswimage':
+    
             if (isQuotedImage) {
             const swsw = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
             cihcih = await Ryuu.downloadMediaMessage(swsw)
@@ -1276,6 +1610,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             }
             break
     case 'upswvideo':
+    
             if (isQuotedVideo) {
             const swsw = isQuotedVideo ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
             cihcih = await Ryuu.downloadMediaMessage(swsw)
@@ -1287,6 +1622,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             }
             break
     case 'fdeface':
+    
             ge = args.join('')           
             var pe = ge.split("|")[0];
             var pen = ge.split("|")[1];
@@ -1312,6 +1648,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     		Ryuu.sendMessage(from, mat, MessageType.extendedText, anu)
             break
     case 'public':
+    
           	if (!mek.key.fromMe) return sticOwner(from) 
           	if (banChats === false) return
           	// var taged = ben.message.extendedTextMessage.contextInfo.mentionedJid[0]
@@ -1319,6 +1656,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
           	fakestatus(`「 *PUBLIC-MODE* 」`)
           	break
 	case 'self':
+	
           	if (!mek.key.fromMe) return sticOwner(from) 
           	if (banChats === true) return
           	uptime = process.uptime()
@@ -1327,8 +1665,9 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
           	fakestatus(`「 *SELF-MODE* 」`)
           	break
  	case 'hidetag':
+ 	
 			if (!mek.key.fromMe) return sticOwner(from) 
-			if (!isGroup) return reply(mess.only.group)
+			if (!isGroup) return sticGroup(from) 
 			var value = args.join(' ')
 			var group = await Ryuu.groupMetadata(from)
 			var member = group['participants']
@@ -1344,6 +1683,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			Ryuu.sendMessage(from, optionshidetag, text)
 			break
 	case 'play':
+	
 			if (args.length === 0) return reply(`Kirim perintah *${prefix}play* _Judul lagu yang akan dicari_`)
             var srch = args.join('')
     		aramas = await yts(srch);
@@ -1366,6 +1706,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
                         }
                    break  
         case 'video':
+        
             if (args.length === 0) return reply(`Kirim perintah *${prefix}video* _Judul lagu yang akan dicari_`)
             var srch = args.join('')
             aramas = await yts(srch);
@@ -1391,6 +1732,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
     case 'stiker':
     case 'sg':
     case 's':
+    
             if ((isMedia && !mek.message.videoMessage || isQuotedImage) && args.length == 0) {
             const encmedia = isQuotedImage ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
             const media = await Ryuu.downloadAndSaveMediaMessage(encmedia)
@@ -1444,6 +1786,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             }
             break               
     case 'toimg':
+    
 			if (!isQuotedSticker) return reply('𝗥𝗲𝗽𝗹𝘆/𝘁𝗮𝗴 𝘀𝘁𝗶𝗰𝗸𝗲𝗿 !')
 			reply(mess.wait)
 			encmedia = JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo
@@ -1458,6 +1801,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			})
 			break
 	case 'ytsearch':
+	
 			if (args.length < 1) return reply('Tolong masukan query!')
 			var srch = args.join('');
 			try {
@@ -1481,11 +1825,13 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			break
 	case 'setreply':
 	case 'setfake':
+	
 			if (!q) return fakegroup(mess.wrongFormat)
 			fake = q
 			fakegroup(`Succes Mengganti Conversation Fake : ${q}`)
 			break
 	case 'setfakeimg':
+	
         	if ((isMedia && !mek.message.videoMessage || isQuotedImage || isQuotedSticker) && args.length == 0) {
           	boij = isQuotedImage || isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
 			delb = await Ryuu.downloadMediaMessage(boij)
@@ -1496,6 +1842,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
           	}
 			break	
 	case 'setthumb':
+	
 	        if ((isMedia && !mek.message.videoMessage || isQuotedImage || isQuotedSticker) && args.length == 0) {
           	boij = isQuotedImage || isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
 			delb = await Ryuu.downloadMediaMessage(boij)
@@ -1506,6 +1853,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
           	}
 			break	
 	case 'ytmp4':
+	
 			if (args.length === 0) return reply(`Kirim perintah *${prefix}ytmp4 [linkYt]*`)
 			let isLinks2 = args[0].match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)
 			if (!isLinks2) return reply(mess.error.Iv)
@@ -1527,6 +1875,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 				}
 				break
 	case 'emoji':
+	
 			if (!q) return fakegroup('emojinya?')
 			qes = args.join(' ')
 			emoji.get(`${qes}`).then(emoji => {
@@ -1536,6 +1885,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
    			})
     		break
 	case 'ytmp3':
+	
 			if (args.length === 0) return reply(`Kirim perintah *${prefix}ytmp3 [linkYt]*`)
 			let isLinks = args[0].match(/(?:https?:\/{2})?(?:w{3}\.)?youtu(?:be)?\.(?:com|be)(?:\/watch\?v=|\/)([^\s&]+)/)
 			if (!isLinks) return reply(mess.error.Iv)
@@ -1557,6 +1907,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 				}
 				break
     case 'image':
+    
             if (args.length < 1) return reply('Masukan teks!')
             const gimg = args.join('');
             reply(mess.wait)
@@ -1567,6 +1918,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             });
             break
  	case 'tiktok':
+ 	
  		if (!isUrl(args[0]) && !args[0].includes('tiktok.com')) return reply(mess.Iv)
  		if (!q) return fakegroup('Linknya?')
  		reply(mess.wait)
@@ -1582,6 +1934,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
      		.catch(e => console.log(e))
      		break
     case 'tiktokaudio':
+    
  		if (!isUrl(args[0]) && !args[0].includes('tiktok.com')) return reply(mess.Iv)
  		if (!q) return fakegroup('Linknya?')
  		reply(mess.wait)
@@ -1593,6 +1946,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
      		.catch(e => console.log(e))
      		break
     case 'brainly':
+    
 			if (args.length < 1) return reply('Pertanyaan apa')
           	brien = args.join(' ')
 			brainly(`${brien}`).then(res => {
@@ -1604,6 +1958,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             })              
 			break
     case 'ig':
+    
         if (!isUrl(args[0]) && !args[0].includes('instagram.com')) return reply(mess.Iv)
         if (!q) return fakegroup('Linknya?')
         reply(mess.wait)
@@ -1621,6 +1976,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             });
 	    break
     case 'igstalk':
+    
             if (!q) return fakegroup('Usernamenya?')
             ig.fetchUser(`${args.join(' ')}`).then(Y => {
             console.log(`${args.join(' ')}`)
@@ -1630,6 +1986,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             })      
             break    
     case 'fb':
+    
             if (!q) return reply('Linknya?')
             if (!isUrl(args[0]) && !args[0].includes('facebook.com')) return reply(mess.Iv)
             reply(mess.wait)
@@ -1641,6 +1998,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             })
             break    
 	case 'term':
+	
 			if (!q) return fakegroup(mess.wrongFormat)
 			exec(q, (err, stdout) => {
 			if (err) return fakegroup(`SELF-BOT:~ ${err}`)
@@ -1650,6 +2008,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			})
 		    break 
     case 'join':
+    
             try {
             if (!isUrl(args[0]) && !args[0].includes('whatsapp.com')) return reply(mess.Iv)
             hen = args[0]
@@ -1663,6 +2022,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             }
             break
     case'twitter':
+    
             if (!isUrl(args[0]) && !args[0].includes('twitter.com')) return reply(mess.Iv)
             if (!q) return fakegroup('Linknya?')
             ten = args[0]
@@ -1672,12 +2032,14 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             break
     case 'runtime':
     case 'test':
+    
             run = process.uptime() 
             teks = `${kyun(run)}`
             fakegroup(teks)
             break  
 	case 'speed':
 	case 'ping':
+	
 			const timestamp = speed();
 			const latensi = speed() - timestamp
 			exec(`neofetch --stdout`, (error, stdout, stderr) => {
@@ -1688,6 +2050,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
 			})
 			break  
     case 'totag':
+    
             if ((isMedia && !mek.message.videoMessage || isQuotedSticker) && args.length == 0) {
             encmedia = isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
             file = await Ryuu.downloadAndSaveMediaMessage(encmedia, filename = getRandom())
@@ -1764,6 +2127,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
         }
         break
     case 'tomp4':
+    
             if ((isMedia && !mek.message.videoMessage || isQuotedSticker) && args.length == 0) {
             ger = isQuotedSticker ? JSON.parse(JSON.stringify(mek).replace('quotedM', 'm')).message.extendedTextMessage.contextInfo : mek
             owgi = await Ryuu.downloadAndSaveMediaMessage(ger)
@@ -1776,6 +2140,7 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             fs.unlinkSync(owgi)
             break
     case 'tourl':
+    
             if ((isMedia && !mek.message.videoMessage || isQuotedImage || isQuotedVideo ) && args.length == 0) {
             boij = isQuotedImage || isQuotedVideo ? JSON.parse(JSON.stringify(mek).replace('quotedM','m')).message.extendedTextMessage.contextInfo : mek
             owgi = await Ryuu.downloadMediaMessage(boij)
@@ -1785,8 +2150,243 @@ ${anime.desc}\n\n*Link Batch* : ${anime.batch}\n*Link Download SD* : ${anime.bat
             reply('kirim/reply gambar/video')
             }
             break	
+case 'profile':
+
+if (!isPetualang) return reply('Kamu bukan petualang... ') 
+var reqXp  = 5000 * (Math.pow(2, getLevelingLevel(sender)) - 1)
+done = monospace(`- [ Profile ] -\nNama : ${pushname}\n- Emas : ${getEmas(sender)}\n- Uang : $${(getBalance(sender, balance))}\n- Besi : ${getBesi(sender)}\n- Berlian : ${getDm(sender)}\n- Ikan : ${getFish(sender)}\n- Hewan : ${getHewan(sender)}`)
+but = [{ buttonId: `!adventure`, buttonText: { displayText: 'Adventure' }, type: 1 }]
+sendButton(from, done, '_© Guest By RyuuOfficial_', but)
+break
+case 'tess':
+
+bayarHealt(sender, 10)
+break
+case 'leaderboard':
+case 'lb':
+
+if (!isGroup) return sticGroup(from) 
+_level.sort((a, b) => (a.xp < b.xp) ? 1 : -1)
+let leaderboardlvl = '🏆 _*Top Leaderboard*_ 🏆\n\n'
+let nom = 0
+try {
+for (let i = 0; i < 10; i++) {
+nom++
+leaderboardlvl += `*[${nom}]* wa.me/${_level[i].id.replace('@s.whatsapp.net', '')}\n- *XP*: ${_level[i].xp} *Level*: ${_level[i].level}\n`
+}
+await reply(leaderboardlvl)
+} catch (err) {
+console.error(err)
+await reply(`minimal 10 user untuk bisa mengakses database`)
+}
+break
+case 'sellikan':
+
+if (!isGroup) return sticGroup(from) 
+if (!isPetualang) return reply(mess.only.player)
+if (args.length < 1) return reply(`Kirim perintah *${prefix + command}* jumlah yang ingin dijual`)
+jmlh = body.slice(10)
+rp = 5 * jmlh
+if (getFish(sender) < jmlh) return reply(`Ikan Kamu Tidak Cukup`)
+sellFish(sender, jmlh, balance)
+addBalance(sender, rp, balance) 
+capti = monospace(`- [ Pasar ] -\n- Penjual : ${pushname}\n- Pembeli : Admin\n- Harga/Ikan : 5\n- Status : Sukses\n- Sisa Ikan : ${getFish(sender)}\n- Hasil Penjualan : $${rp}`)
+but = [{ buttonId: '!menu', buttonText: { displayText: 'menu' }, type: 1 }]
+sendButton(from, capti, '_© Guest By RyuuOfficial_', but)
+break
+case 'sellikan':
+
+if (!isGroup) return sticGroup(from) 
+if (!isPetualang) return reply(mess.only.player)
+if (args.length < 1) return reply(`Kirim perintah *${prefix + command}* jumlah yang ingin dijual`)
+jmlh = body.slice(10)
+rp = 5 * jmlh
+if (getHewan(sender) < jmlh) return reply(`Ikan Kamu Tidak Cukup`)
+sellHewan(sender, jmlh, balance)
+addBalance(sender, rp, balance) 
+capti = monospace(`- [ Pasar ] -\n- Penjual : ${pushname}\n- Pembeli : Admin\n- Harga/Hewan : 5\n- Status : Sukses\n- Sisa Hewan : ${getFish(sender)}\n- Hasil Penjualan : $${rp}`)
+but = [{ buttonId: '!menu', buttonText: { displayText: 'menu' }, type: 1 }]
+sendButton(from, capti, '_© Guest By RyuuOfficial_', but)
+break
+case 'sellbesi':
+
+if (!isGroup) return sticGroup(from) 
+if (!isPetualang) return reply(mess.only.player)
+if (args.length < 1) return reply(`Kirim perintah *${prefix + command}* jumlah yang ingin dijual`)
+jmlh = body.slice(10)
+rp = 10 * jmlh
+if (getBesi(sender) < jmlh) return reply(`Besi Kamu Tidak Cukup`)
+sellBesi(sender, jmlh, balance)
+addBalance(sender, rp, balance) 
+capti = monospace(`- [ Pasar ] -\n- Penjual : ${pushname}\n- Pembeli : Admin\n- Harga/Besi : 10\n- Status : Sukses\n- Sisa Besi : ${getBesi(sender)}\n- Hasil Penjualan : $${rp}`)
+but = [{ buttonId: '!menu', buttonText: { displayText: 'menu' }, type: 1 }]
+sendButton(from, capti, '_© Guest By RyuuOfficial_', but)
+break
+case 'sellemas':
+
+if (!isGroup) return sticGroup(from) 
+if (!isPetualang) return reply(mess.only.player)
+if (args.length < 1) return reply(`Kirim perintah *${prefix + command}* jumlah yang ingin dijual`)
+jmlh = body.slice(10)
+rp = 25 * jmlh
+if (getEmas(sender) < jmlh) return reply(`Emas Kamu Tidak Cukup`)
+sellEmas(sender, jmlh, balance)
+addBalance(sender, rp, balance) 
+capti = monospace(`- [ Pasar ] -\n- Penjual : ${pushname}\n- Pembeli : Admin\n- Harga/Emas : 25\n- Status : Sukses\n- Sisa Emas : ${getEmas(sender)}\n- Hasil Penjualan : $${rp}`)
+but = [{ buttonId: '!menu', buttonText: { displayText: 'menu' }, type: 1 }]
+sendButton(from, capti, '_© Guest By RyuuOfficial_', but)
+break 
+case 'selldiamond':
+
+if (!isGroup) return sticGroup(from) 
+if (!isPetualang) return reply(mess.only.player)
+if (args.length < 1) return reply(`Kirim perintah *${prefix + command}* jumlah yang ingin dijual`)
+ttl = body.slice(13)
+var etoo = 75 * ttl
+if (getDm(sender) < ttl) return reply(`Besi Kamu Tidak Cukup`)
+sellDm(sender, ttl)
+addBalance(sender, etoo, balance) 
+capti = monospace(`- [ Pasar ] -\n- Penjual : ${pushname}\n- Pembeli : Admin\n- Harga/Dm : 75\n- Status : Sukses\n- Sisa Diamond : ${getDm(sender)}\n- Hasil Penjualan : $${etoo}`)
+but = [{ buttonId: '!menu', buttonText: { displayText: 'Menu' }, type: 1 }]
+sendButton(from, capti, '_© Guest By RyuuOfficial_', but)
+break
+case 'mancing':
+
+if (!isPetualang) return reply(mess.only.player)
+ikannya = ikan[Math.floor(Math.random() * ikan.length)]
+xp = Math.ceil(Math.random() * 350)
+coin = randomNomor(50)
+ditangkap = Math.ceil(Math.random() * 50)
+cing = await getBuffer(`https://telegra.ph/file/d9b15de4f661808dfd0b9.jpg`)
+setTimeout( () => {
+caption = monospace(`「 Memancing 」\n\n- Tangkapan : ${ikannya}\n- Total Dapat : ${ditangkap} Ikan\n- MONEY : $${coin}\n- EXP : ${xp}Xp`)
+but = [
+{ buttonId: '!mancing', buttonText: { displayText: 'Mancing lagi' }, type: 1 },
+{ buttonId: '!menu', buttonText: { displayText: 'Menu' }, type: 1 }
+]
+sendButImage(from, caption, '_© Pancingan By RyuuOfficial_', cing, but, {quoted: mek})
+}, 6000)
+setTimeout( () => {
+Ryuu.sendMessage(from, 'Berhasil Mendapatkan Ikan. . .', text) 
+}, 5000) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, 'Meanarik kail. . .', text) 
+}, 3000) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, 'Mulai memancing. . .', text) 
+}, 1500) // 1000 = 1s,
+addFish(sender, ditangkap)
+addLevelingXp(sender, xp)
+addBalance(sender, coin, balance) 
+break
+case 'berburu':
+
+if (!isPetualang) return reply(mess.only.player)
+hewannya = hewan[Math.floor(Math.random() * hewan.length)]
+xp = Math.ceil(Math.random() * 350)
+coin = randomNomor(50)
+ditangkap = Math.ceil(Math.random() * 50)
+cing = await getBuffer(`https://telegra.ph/file/d9b15de4f661808dfd0b9.jpg`)
+setTimeout( () => {
+caption = monospace(`「 Berburu 」\n\n- Tangkapan : ${hewannya}\n- Total Dapat : ${ditangkap} Ikan\n- MONEY : $${coin}\n- EXP : ${xp}Xp`)
+but = [
+{ buttonId: '!berburu', buttonText: { displayText: 'Buru lagi' }, type: 1 },
+{ buttonId: '!menu', buttonText: { displayText: 'Menu' }, type: 1 }
+]
+sendButImage(from, caption, '_© Buruan By RyuuOfficial_', cing, but, {quoted: mek})
+}, 6000)
+setTimeout( () => {
+Ryuu.sendMessage(from, 'Berhasil Mendapatkan Hewan. . .', text) 
+}, 5000) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, 'Mengecek Hewan. . .', text) 
+}, 3000) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, 'Mulai Berburu. . .', text) 
+}, 1500) // 1000 = 1s,
+addHewan(sender, ditangkap)
+addLevelingXp(sender, xp)
+addBalance(sender, coin, balance) 
+break
+case 'adventure':
+
+if (isHealt(sender)) return reply('Healt')
+if (!isPetualang) return reply(mess.only.player)
+ngab = ['Longsor','Letusan Gunung','Tsunami','Gempa Bumi','Meteor','Demon']
+const sesuatu = ngab[Math.floor(Math.random() * ngab.length)]
+const dungeon =['Whetstone','Willow Field','Rodeo','Verdant Blufs','Bull Holland','Fallen Tree','Dellnort','Verona Lush','Leafy Hollow','Chilliad Dome','Garcia','Pine Valley','Santa Florals','Guvero East','Cranbarry','Junever','Aldea Malvada','Green Palms','Green Oasis','Fort Carson','Prickel Pine','Pilson Meadow','Boca Roca','Rocksore East','Camel Toe','Hanky Panky','Fern Ridge','Montgomerry','Flint Yankton','Vespucci','fortress city', 'ravines valley', 'horizon valley', 'cyber city', 'end city', 'templar city', 'pochinki', 'peak','Vertical Zone','Sentainel Country','Night City','Flush City','Royals Canyon','Blackburn','Peterborough','Tarnstead','Jarren’s','Outpost','Landow','Nearon','Kincardine','Aysgarth','Veritas','Openshaw','Bredwardine','Berkton','Wolford','Norwich','Kald','Solaris','Kilead','Pitmerden','Acomb','Eldham','Warcester','Lingmell','Kilead','Cromerth','Wingston','Garmsby','Kingcardine','Perthlochry','Frostford','Hillford','Hardersfield','Tarrin','Holmfirth','Caerleon','Elisyum','Ballaeter','Penshaw','Bradford','Wigston','Accreton','Kameeraska','Ferncombe','Kilerth','Erostey','Carran','Jongvale','Larnwick','Queenstown','Whaelrdrake','Baerney','Wingston','Arkney','Strongfair','Lowestoft','Beggar’s Hole','Shepshed','Perthlochry','Ironforge','Tywardreath','Pontheugh','Foolshope','Hull','Dalmerlington','Aucteraden','Woodpine','Millstone','Windermere','Lancaster','Kirkwall','Rotherhithe','Astrakhan','Watford','Ritherhithe','Krosstoen','Pella’s','Wish','Grimsby','Ayrith','Ampleforth','Skystead','Eanverness','Penshaw','Peatsland','Astrakane','Pontybridge','Caershire','Snowbush','Sutton','Northwich','Hogsfeet','Claethorpes','Sudbury','Cherrytown','Blue Field','Orrinshire','Aempleforth','Garrigill','Jedburgh','Eastbourne','Taedmorden','Venzor','Grasmere','Ubbin','Falls','Violl’s Garden','Glanchester','Bailymena','Arkkukari','Skargness','Cardend','Llanybydder','Faversham','Yellowseed','Carlisle','Cirencester','Aramoor','Furness','Kincardine','Rotherham','Emelle','Boroughton','Carran','Ffestiniog','Mansfield','Huthwaite','Marclesfield','Pavv','Squall’s End','Glenarm','Dragontail','Moressley','Hardersfield','Gilramore','Aria','Ecrin','Clare View Point','Blackburn','Oakheart','Doonatel','Broughton','Carlisle','Murlayfield','Nuxvar']
+const ad = dungeon[Math.floor(Math.random() * dungeon.length)]
+anu = fs.readFileSync('./lib/rpg/dungeon.js');
+jsonData = JSON.parse(anu);
+randIndex = Math.floor(Math.random() * jsonData.length);
+randKey = jsonData[randIndex];
+hasm = await getBuffer(randKey.result)  
+const adven = Math.ceil(Math.random() * 1000)
+const money = Math.ceil(Math.random() * 300)
+setTimeout( () => {
+caption = monospace(`「 DEATH 」\n\n- Tempat  ${ad}\n- MONEY : $${money}\n- EXP : ${adven}Xp`)
+but = [
+{ buttonId: `!menu`, buttonText: { displayText: 'menu' }, type: 1 }]
+sendButImage(from, caption, '_© Advanture By RyuuOfficial_', hasm, but, {quoted: mek})   
+}, 7000)
+setTimeout( () => {
+Ryuu.sendMessage(from, `Awass`, text) 
+}, 5000) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, `Tiba tiba ada ${sesuatu}`, text) 
+}, 3000) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, `${pushname} sedang bertualang`, text) 
+}, 1500) // 1000 = 1s,
+addLevelingXp(sender, adven)
+addBalance(sender, money, balance) 
+await healtAdd(sender)
+break
+case 'mining':   
+
+if (!isGroup) return sticGroup(from) 
+if (!isPetualang) return reply(mess.only.player)
+pp = randomNomor(75)
+emas = randomNomor(15)
+dm = randomNomor(3)
+besi = randomNomor(50)
+done = monospace(`Selesai Mining\nlist hasil :\nEmas : ${emas}\nUang : $${pp}\nBesi : ${besi}⛓️\nBerlian : ${dm}`)
+addBalance(sender, pp, balance)
+addBesi(sender, besi)
+addEmas(sender, emas)
+addDm(sender, dm)
+mining = ('Waitt sedang menguli . . .')
+setTimeout( () => {//case by pebri
+but = [{ buttonId: `!mining`, buttonText: { displayText: 'Mining again' }, type: 1 }]
+sendButton(from, done, '_© Mining By RyuuOfficial_', but)
+}, 9000) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, 'Selesai menguli. . .', text) 
+}, 7000) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, 'Menemukan emas. . .️️️', text) 
+}, 4000) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, 'Mulai menambang. . .️️', text) 
+}, 1500) // 1000 = 1s,
+setTimeout( () => {
+Ryuu.sendMessage(from, mining, text, {quoted: mek}) 
+}, 0) // 1000 = 1s,
+break
+case 'joinrpg':
+
+if (!isGroup) return sticGroup(from) 
+if (isPetualang) return reply('Kamu sudah menjadi petualang')
+_petualang.push(sender)
+fs.writeFileSync('./lib/data/inventori.json', JSON.stringify(_petualang))
+capt = `- [ Selamat ${pushname} ] -\nKamu terdaftar sebagai petualang!\nSilahkan ketik ${prefix}profile`
+Ryuu.sendMessage(from, capt, text, {quoted: mek})
+addInventori(sender)
+addLevelingId(sender)
+break
     case 'inspect':
             try {
+            
             if (!isUrl(args[0]) && !args[0].includes('whatsapp.com')) return reply(mess.Iv)
             if (!q) return reply('masukan link wa')
             cos = args[0]
